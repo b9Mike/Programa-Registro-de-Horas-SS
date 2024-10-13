@@ -1,10 +1,10 @@
-import { CareerRepository } from "../repositories/careerRepository.js";
+import { DegreeRepository } from "../repositories/degreeRepository.js";
 
 //Obtener carrera
 export const getCareers = async (req, res) => {
     try {
-        const careers = await CareerRepository.findAll();
-        res.json(careers);
+        const degree = await DegreeRepository.findAll();
+        res.json(degree);
     } catch (error) {
         return res.status(500).json({message: error.message});
     }

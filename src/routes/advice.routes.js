@@ -1,12 +1,12 @@
 import { Router } from "express";
-//import { getUsers, createUsers, updateUsers, deleteUsers, getByIdUsers } from '../controllers/users.controller.js'
+//import { getAdvisorySessions, createAdvisorySessions, updateAdvisorySessions, deleteAdvisorySessions, getByIdAdvisorySessions } from '../controllers/AdvisorySessions.controller.js'
 const router = Router();
 
 //rutas de asesorias
-router.get('/advice', getAdvice);
-router.post('/advice', createAdvice);
-router.put('/advice/:id', updateAdvice);
-router.delete('/advice/:id', deleteAdvice);
-router.get('/advice/:id', getByIdAdvice);
+router.get('/advisorySessions', getAdvisorySessions);
+router.post('/advisorySessions', createAdvisorySessions);
+router.put('/advisorySessions/:id', updateAdvisorySessions);
+router.delete('/advisorySessions/:id', deleteAdvisorySessions);
+router.get('/advisorySessions/:id', getByIdAdvisorySessions);
 
 export default router

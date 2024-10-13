@@ -1,42 +1,67 @@
 import { User } from "../models/User.js";
 
 //funciones para interactuar con la tabla usuarios
-export const CareerRepository = {
+export const userRepository = {
+    
     // Obtener todos los usuarios
-    findAll: async () => {
-        return await User.findAll();
+    getAllUsers: async () => {
+        try {
+            const users = await User.findAll();
+            return users;
+        } catch (error) {
+            throw new Error('Error al obtener usuarios: ' + error.message);
+        }
     },
 
-    // Buscar un usuario por su ID
-    findById: async (id) => {
-        return await User.findByPk(id);
+    // Obtener un usuario por su matrícula (enrollment)
+    getUserByEnrollment: async (enrollment) => {
+        try {
+            const user = await User.findOne({
+                where: { Enrollment: enrollment }
+            });
+            return user;
+        } catch (error) {
+            throw new Error('Error al obtener usuario por matrícula: ' + error.message);
+        }
     },
 
     // Crear un nuevo usuario
-    create: async (name_user, password, type) => {
-        return await User.create({ name_user, password, type });
+    createUser: async (userData) => {
+        try {
+            const newUser = await User.create(userData);
+            return newUser;
+        } catch (error) {
+            throw new Error('Error al crear usuario: ' + error.message);
+        }
     },
 
-    // Actualizar un usuario
-    update: async (id, data) => {
-        const user = await User.findByPk(id);
-        if (user) {
-            user.name_user = data.name_user || user.name_user;
-            user.password = data.password || user.password;
-            user.type = data.type || user.type;
-            await user.save();
-            return user;
+    // Actualizar un usuario existente
+    updateUser: async (enrollment, updatedData) => {
+        try {
+            const [updated] = await User.update(updatedData, {
+                where: { Enrollment: enrollment }
+            });
+
+            if (updated) {
+                const updatedUser = await User.findOne({ where: { Enrollment: enrollment } });
+                return updatedUser;
+            }
+            throw new Error('Usuario no encontrado');
+        } catch (error) {
+            throw new Error('Error al actualizar usuario: ' + error.message);
         }
-        return null;
     },
 
-    // Eliminar un usuario
-    delete: async (id) => {
-        const user = await User.findByPk(id);
-        if (user) {
-            await user.destroy();
-            return true;
+    // Eliminar (desactivar) un usuario por matrícula
+    deactivateUser: async (enrollment) => {
+        try {
+            const updated = await User.update(
+                { Active: false }, // Cambiamos el estado de activo a falso
+                { where: { Enrollment: enrollment } }
+            );
+            return updated;
+        } catch (error) {
+            throw new Error('Error al desactivar usuario: ' + error.message);
         }
-        return false;
     }
 };

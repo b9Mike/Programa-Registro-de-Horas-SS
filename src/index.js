@@ -2,7 +2,7 @@
 import app from './app.js';
 import {sequelize} from './repositories/database.js';
 
-import {} from '../src/models/Career.js';
+import {} from './models/Degree.js';
 
 const PORT = 4000;
 
