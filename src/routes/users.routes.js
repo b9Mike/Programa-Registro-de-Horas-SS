@@ -1,14 +1,12 @@
 import { Router } from "express";
 import { body, param } from "express-validator";
-import { getAllUsers, getUserByEnrollment, logIn, register, updateUser, toggleUserActivation } from '../controllers/users.controller.js'
+import { getAllUsers, logIn, register, updateUser, toggleUserActivation } from '../controllers/users.controller.js'
 const router = Router();
 
 //rutas para el usuario
+//Ruta para traer todos los usuarios existentes
 router.get('/users', getAllUsers);
-router.get('/user/:enrollment',
-    [
-        param('enrollment').isInt().withMessage('La matricula debe ser un número entero.'),
-    ], getUserByEnrollment);
+//Ruta para login
 router.post('/login/',
     [
         body('enrollment').isInt().notEmpty().withMessage('La matricula es requerida.'),
@@ -17,6 +15,7 @@ router.post('/login/',
             .isLength({ min: 5, max: 255 }).withMessage('La contraseña debe tener entre 5 a 255 caracteres'),
 
     ], logIn);
+//Ruta para registrar usuario
 router.post('/register/',
     [
         body('enrollment').isInt().notEmpty().withMessage('La matricula es requerida.'),
@@ -32,6 +31,7 @@ router.post('/register/',
         body('userCreation').isInt().notEmpty().withMessage('La matricula del usuario creador es requerida.'),
 
     ], register);
+//Ruta para actualizar usuario
 router.put('/user/:enrollment',
     [
         param('enrollment').isInt().withMessage('La matricula debe ser un entero.'),
@@ -47,7 +47,8 @@ router.put('/user/:enrollment',
         body('userUpdate').isInt().notEmpty().withMessage('La matricula del usuario que actualiza es requerida.'),
 
     ], updateUser);
-router.get('user/active/:enrollment',
+//Ruta para activar o desactivar usuario
+router.get('/user/active/:enrollment',
     [
         param('enrollment').isInt().withMessage('La matricula debe ser un número entero.'),
 

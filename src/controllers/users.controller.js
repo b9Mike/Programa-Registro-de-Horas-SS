@@ -10,19 +10,6 @@ export const getAllUsers = async (req, res) => {
     }
 };
 
-//Obtener usuario por Matricula
-export const getUserByEnrollment = async (req, res) => {
-    const { enrollment } = req.params;
-    if (!enrollment)
-        return res.status(400).json({ message: "Faltan campos requeridos." });
-
-    try {
-        const user = await userRepository.getUserByEnrollment(enrollment);
-        res.status(200).json(user);
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-};
 
 //Log In
 export const logIn = async (req, res) => {
@@ -46,15 +33,15 @@ export const register = async (req, res) => {
 
     try {
         const user = await userRepository.createUser({
-            enrollment,
-            name,
-            password,
-            type,
-            userCreation,
-            CreatedAt: new Date(),
+            Enrollment: enrollment,
+            Name: name,
+            Password: password,
+            Type: type,
+            UserCreation: userCreation,
             UserUpdate: userCreation,
+            CreatedAt: new Date(),
             UpdatedAt: new Date(),
-            Active: true,
+            Active: true // Valor por defecto
         });
 
         res.status(200).json(user);
