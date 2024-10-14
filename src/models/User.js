@@ -21,6 +21,10 @@ export const User = sequelize.define('Users', {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
+    UserCreation: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
     CreatedAt: {
         type: DataTypes.DATE,
         allowNull: false,
