@@ -1,11 +1,11 @@
 import { DataTypes } from "sequelize";
-import { sequelize } from "../database/database";
+import { sequelize } from "../database/database.js";
 
 //Carreras
 export const Degree = sequelize.define('Degrees', {
     Identity: {
         type: DataTypes.INTEGER,
-        primaryKeyY: true,
+        primaryKey: true,
         autoIncrement: true,
         allowNull: false,
     },

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { body, param } from "express-validator";
-import { createLearningUnit, getAllLearningUnits, getLearningUnitById, toggleLearningUnitActivation, updateLearningUnit } from "../controllers/learningUnits.controller";
+import { createLearningUnit, getAllLearningUnits, getLearningUnitById, toggleLearningUnitActivation, updateLearningUnit } from "../controllers/learningUnits.controller.js";
 const router = Router();
 
 //rutas de unidad de aprendizaje

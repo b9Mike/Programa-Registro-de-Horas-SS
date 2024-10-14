@@ -1,12 +1,12 @@
 import { DataTypes } from "sequelize";
-import { sequelize } from "../database/database";
-import { Degree } from "./Degrees";
+import { sequelize } from "../database/database.js";
+import { Degree } from "./Degrees.js";
 
 //Materias
 export const LearningUnit = sequelize.define('LearningUnits', {
     Identity: {
         type: DataTypes.INTEGER,
-        primaryKeyY: true,
+        primaryKey: true,
         autoIncrement: true,
         allowNull: false,
     },
@@ -45,7 +45,7 @@ export const LearningUnit = sequelize.define('LearningUnits', {
     },
 },
 {
-    tableName: 'Degrees',
+    tableName: 'LearningUnits',
     timestamps: false,
 });
 

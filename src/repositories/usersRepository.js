@@ -1,5 +1,5 @@
 import { User } from "../models/User.js";
-import bcrypt from 'bcrypt';  // Para comparar la contraseña encriptada
+//import bcrypt from 'bcrypt';  // Para comparar la contraseña encriptada
 
 //funciones para interactuar con la tabla usuarios
 export const userRepository = {

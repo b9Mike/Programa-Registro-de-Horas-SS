@@ -1,4 +1,4 @@
-import { adviseeRepository } from '../repositories/adviseeRepository';
+import { adviseeRepository } from '../repositories/adviseeRepository.js';
 
 export const getAllAdvisees = async (req, res) => {
     try {

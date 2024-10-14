@@ -1,4 +1,4 @@
-import { advisorySessionRepository } from '../repositories/advisorySessionRepository';
+import { advisorySessionRepository } from '../repositories/advisorySessionRepository.js';
 
 export const getAllAdvisorySessions = async (req, res) => {
     try{

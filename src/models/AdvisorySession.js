@@ -1,14 +1,14 @@
 import { DataTypes } from "sequelize";
-import { sequelize } from "../database/database";
-import { LearningUnit } from "./LearningUnit";
-import { Advisor } from "./Advisor";
-import { Advisee } from "./Advisee";
+import { sequelize } from "../database/database.js";
+import { LearningUnit } from "./LearningUnit.js";
+import { Advisor } from "./Advisor.js";
+import { Advisee } from "./Advisee.js";
 
 //Asesorias
 export const AdvisorySession = sequelize.define('AdvisorySessions', {
     Identity: {
         type: DataTypes.INTEGER,
-        primaryKeyY: true,
+        primaryKey: true,
         autoIncrement: true,
         allowNull: false,
     },

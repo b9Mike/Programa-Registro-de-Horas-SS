@@ -1,4 +1,4 @@
-import { learningUnitRepository } from "../repositories/learningUnitRepository";
+import { learningUnitRepository } from "../repositories/learningUnitRepository.js";
 
 //Obtener Materias
 export const getAllLearningUnits = async (req, res) => {

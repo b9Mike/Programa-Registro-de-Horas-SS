@@ -1,10 +1,17 @@
 // arrancar servidor
+import dotenv from 'dotenv';
+dotenv.config();
 import app from './app.js';
-import {sequelize} from './repositories/database.js';
+import {sequelize} from './database/database.js';
 
-import {} from './models/Degree.js';
+import {} from './models/Advisee.js';
+import {} from './models/Advisor.js';
+import {} from './models/AdvisorySession.js';
+import {} from './models/Degrees.js';
+import {} from './models/LearningUnit.js';
+import {} from './models/User.js';
 
-const PORT = 4000;
+const PORT = process.env.DB_PORT || 3000;
 
 async function main () {
     try {

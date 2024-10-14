@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { body, param } from "express-validator";
-import { createAdvisor, getAdvisorByEnrollment, getAllAdvisors, toggleAdvisorActivation, updateAdvisor } from "../controllers/advisors.controller";
+import { createAdvisor, getAdvisorByEnrollment, getAllAdvisors, toggleAdvisorActivation, updateAdvisor } from "../controllers/advisors.controller.js";
 const router = Router();
 
 //rutas de asesores
