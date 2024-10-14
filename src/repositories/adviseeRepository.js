@@ -48,15 +48,27 @@ export const adviseeRepository = {
         }
     },
 
-    // Eliminar un asesorado
-    deleteAdvisee: async (enrollment) => {
+    // Activar o desactivar un asesorado
+    toggleAdviseeActivation: async (enrollment) => {
         try {
-            const deletedAdvisee = await Advisee.destroy({
-                where: { Enrollment: enrollment }
+            const advisee = await Advisee.findOne({ where: { Enrollment: enrollment } });
+            if (!advisee) {
+                throw new Error('El asesorado no existe');
+            }
+    
+            const newStatus = !advisee.Active;
+    
+            await advisee.update({
+                Active: newStatus,
+                UpdateAt: new Date(),
             });
-            return deletedAdvisee;
+    
+            return {
+                message: newStatus ? 'Asesorado activado exitosamente' : 'Asesorado desactivado exitosamente',
+                advisee,
+            };
         } catch (error) {
-            throw new Error('Error al eliminar el asesorado: ' + error.message);
+            throw new Error('Error al actualizar el estado del asesorado: ' + error.message);
         }
     }
 };

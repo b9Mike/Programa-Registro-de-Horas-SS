@@ -53,16 +53,27 @@ export const learningUnitRepository = {
         }
     },
 
-    // Desactivar una materia (marcarla como inactiva)
-    deactivateLearningUnit: async (id) => {
+    // Activar o desactivar Unidad de aprendizaje
+    toggleLearningUnitActivation: async (identity) => {
         try {
-            const updated = await LearningUnit.update(
-                { Active: false }, // Desactivamos la materia
-                { where: { Identity: id }
+            const learningUnit = await LearningUnit.findOne({ where: { Identity: identity } });
+            if (!learningUnit) {
+                throw new Error('La materia no existe');
+            }
+    
+            const newStatus = !learningUnit.Active;
+    
+            await learningUnit.update({
+                Active: newStatus,
+                UpdateAt: new Date(),
             });
-            return updated;
+    
+            return {
+                message: newStatus ? 'Materia activada exitosamente' : 'Materia desactivada exitosamente',
+                learningUnit,
+            };
         } catch (error) {
-            throw new Error('Error al desactivar la materia: ' + error.message);
+            throw new Error('Error al actualizar el estado de la materia: ' + error.message);
         }
     }
 };

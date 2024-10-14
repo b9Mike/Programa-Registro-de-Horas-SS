@@ -53,16 +53,27 @@ export const degreeRepository = {
         }
     },
 
-    // Desactivar una carrera (marcarla como inactiva)
-    deactivateDegree: async (id) => {
+    // Activar o desactivar una carrera
+    toggleDegreeActivation: async (identity) => {
         try {
-            const updated = await Degree.update(
-                { Active: false }, // Desactivamos la carrera
-                { where: { Identity: id } }
-            );
-            return updated;
+            const degree = await Degree.findOne({ where: { Identity: identity } });
+            if (!degree) {
+                throw new Error('La carrera no existe');
+            }
+    
+            const newStatus = !degree.Active;
+    
+            await degree.update({
+                Active: newStatus,
+                UpdateAt: new Date(),
+            });
+    
+            return {
+                message: newStatus ? 'Carrera activada exitosamente' : 'Carrera desactivada exitosamente',
+                degree,
+            };
         } catch (error) {
-            throw new Error('Error al desactivar la carrera: ' + error.message);
+            throw new Error('Error al actualizar el estado de la carrera: ' + error.message);
         }
     }
 };

@@ -48,15 +48,27 @@ export const advisorySessionRepository = {
         }
     },
 
-    // Eliminar una sesión de asesoría
-    deleteAdvisorySession: async (sessionId) => {
+    // Activar o desactivar una sesión de asesoría
+    toggleAdvisorySessionActivation: async (identity) => {
         try {
-            const deletedSession = await AdvisorySession.destroy({
-                where: { Identity: sessionId }
+            const advisorySession = await AdvisorySession.findOne({ where: { Identity: identity } });
+            if (!advisorySession) {
+                throw new Error('La sesión de asesoría no existe');
+            }
+    
+            const newStatus = !advisorySession.Active;
+    
+            await advisorySession.update({
+                Active: newStatus,
+                UpdateAt: new Date(),
             });
-            return deletedSession;
+    
+            return {
+                message: newStatus ? 'Sesión de asesoría activada exitosamente' : 'Sesión de asesoría desactivada exitosamente',
+                advisorySession,
+            };
         } catch (error) {
-            throw new Error('Error al eliminar la sesión de asesoría: ' + error.message);
+            throw new Error('Error al actualizar el estado de la sesión de asesoría: ' + error.message);
         }
     }
 };

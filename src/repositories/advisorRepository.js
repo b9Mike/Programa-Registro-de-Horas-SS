@@ -48,15 +48,27 @@ export const advisorRepository = {
         }
     },
 
-    // Eliminar un asesor
-    deleteAdvisor: async (enrollment) => {
+    // Activar o desactivar un asesor
+    toggleAdvisorActivation: async (enrollment) => {
         try {
-            const deletedAdvisor = await Advisor.destroy({
-                where: { Enrollment: enrollment }
+            const advisor = await Advisor.findOne({ where: { Enrollment: enrollment } });
+            if (!advisor) {
+                throw new Error('El asesor no existe');
+            }
+    
+            const newStatus = !advisor.Active;
+    
+            await advisor.update({
+                Active: newStatus,
+                UpdateAt: new Date(),
             });
-            return deletedAdvisor;
+    
+            return {
+                message: newStatus ? 'Asesor activado exitosamente' : 'Asesor desactivado exitosamente',
+                advisor,
+            };
         } catch (error) {
-            throw new Error('Error al eliminar el asesor: ' + error.message);
+            throw new Error('Error al actualizar el estado del asesor: ' + error.message);
         }
     }
 };

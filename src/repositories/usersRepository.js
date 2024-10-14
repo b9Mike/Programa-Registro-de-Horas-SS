@@ -1,4 +1,5 @@
 import { User } from "../models/User.js";
+import bcrypt from 'bcrypt';  // Para comparar la contraseña encriptada
 
 //funciones para interactuar con la tabla usuarios
 export const userRepository = {
@@ -13,15 +14,24 @@ export const userRepository = {
         }
     },
 
-    // Obtener un usuario por su matrícula (enrollment)
-    getUserByEnrollment: async (enrollment) => {
+    // Funcion de login
+    getUserByEnrollment: async (enrollment, password) => {
         try {
+            // Buscamos al usuario por la matrícula y la contraseña
             const user = await User.findOne({
-                where: { Enrollment: enrollment }
+                where: {
+                    Enrollment: enrollment,
+                    Password: password
+                },
             });
+    
+            if (!user) {
+                throw new Error('Matrícula o contraseña incorrecta');
+            }
+    
             return user;
         } catch (error) {
-            throw new Error('Error al obtener usuario por matrícula: ' + error.message);
+            throw new Error('Error al buscar el usuario: ' + error.message);
         }
     },
 
@@ -52,16 +62,36 @@ export const userRepository = {
         }
     },
 
-    // Eliminar (desactivar) un usuario por matrícula
-    deactivateUser: async (enrollment) => {
+    // Activar o desactivar usuario
+    toggleUserActivation: async (enrollment) => {
         try {
-            const updated = await User.update(
-                { Active: false }, // Cambiamos el estado de activo a falso
-                { where: { Enrollment: enrollment } }
-            );
-            return updated;
+            // Buscar el usuario por matrícula (enrollment)
+            const user = await User.findOne({
+                where: { Enrollment: enrollment }
+            });
+    
+            // Si el usuario no existe, devolver un error
+            if (!user) {
+                throw new Error('La matrícula no existe');
+            }
+    
+            // Alternar el estado de activación del usuario
+            const newStatus = !user.Active;
+    
+            // Actualizar el estado de activación
+            await user.update({
+                Active: newStatus,
+                UpdateAt: new Date() // Actualizar el campo UpdateAt con la fecha actual
+            });
+    
+            // Devolver un mensaje indicando el nuevo estado del usuario
+            return {
+                message: newStatus ? 'Usuario activado exitosamente' : 'Usuario desactivado exitosamente',
+                user
+            };
+            
         } catch (error) {
-            throw new Error('Error al desactivar usuario: ' + error.message);
+            throw new Error('Error al actualizar el estado del usuario: ' + error.message);
         }
     }
 };
