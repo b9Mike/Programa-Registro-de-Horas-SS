@@ -12,7 +12,7 @@ export const getAllUsers = async (req, res) => {
 
 //Obtener usuario por Matricula
 export const getUserByEnrollment = async (req, res) => {
-    const { enrollment } = req.body;
+    const { enrollment } = req.params;
     if (!enrollment)
         return res.status(400).json({ message: "Faltan campos requeridos." });
 
