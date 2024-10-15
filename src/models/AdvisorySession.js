@@ -16,7 +16,7 @@ export const AdvisorySession = sequelize.define('AdvisorySessions', {
     LearningUnitIdentity: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        reference: {
+        references: {
             model: LearningUnit,
             key: 'Identity',
         },
@@ -37,7 +37,7 @@ export const AdvisorySession = sequelize.define('AdvisorySessions', {
     AdvisorIdentity: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        reference: {
+        references: {
             model: Advisor,
             key: 'Enrollment',
         },

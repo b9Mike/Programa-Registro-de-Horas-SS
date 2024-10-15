@@ -100,3 +100,19 @@ export const toggleAdvisorySessionActivation = async (req, res) => {
     }
     
 }
+
+export const getAdvisorySessionByAdvisor = async (req, res) => {
+    const { enrollment } = req.params;
+
+    try {
+        const advisories = await advisorySessionRepository.getAdvisorySessionByAdvisor(enrollment);
+
+        if (!advisories || advisories.length === 0) {
+            return res.status(404).json({ message: 'No se encontraron asesorías para este asesor.' });
+        }
+
+        return res.json(advisories);
+    } catch (error) {
+        return res.status(500).json({ message: 'Error al obtener las asesorías del asesor', error: error.message });
+    }
+};

@@ -56,6 +56,6 @@ export const Advisor = sequelize.define('Advisors', {
 Advisor.associate = (models) => {
     Advisor.belongsTo(models.Degree, {
         foreignKey: 'DegreeIdentity',
-        tagetKey: 'Identity',
+        targetKey: 'Identity',
     });
 };

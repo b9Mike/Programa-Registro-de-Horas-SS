@@ -80,5 +80,18 @@ export const advisorySessionRepository = {
         } catch (error) {
             throw new Error('Error al actualizar el estado de la sesión de asesoría: ' + error.message);
         }
+    },
+
+    getAdvisorySessionByAdvisor: async (enrollment) => {
+        try {
+            // Consulta para obtener las sesiones de asesoría del asesor con su enrollment
+            const advisories = await AdvisorySession.findAll({
+                where: { AdvisorIdentity: enrollment },
+            });
+
+            return advisories;
+        } catch (error) {
+            throw new Error('Error al obtener las asesorías: ' + error.message);
+        }
     }
 };
