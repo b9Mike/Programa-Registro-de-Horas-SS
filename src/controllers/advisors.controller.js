@@ -31,11 +31,11 @@ export const createAdvisor = async (req, res) => {
 
     try{
         const advisor = await advisorRepository.createAdvisor({
-            enrollment,
-            gender,
-            name,
-            degreeIdentity,
-            userCreation,
+            Enrollment: enrollment,
+            Gender: gender,
+            Name: name,
+            DegreeIdentity: degreeIdentity,
+            UserCreation: userCreation,
             CreatedAt: new Date(),
             UserUpdate: userCreation,
             UpdateAt: new Date(),
@@ -61,7 +61,7 @@ export const updateAdvisor = async (req, res) => {
             Name: name, 
             DegreeIdentity: degreeIdentity, 
             UserUpdate: userUpdate, 
-            UpdatedAt: new Date() 
+            UpdateAt: new Date() 
         });
         return res.status(200).json(updatedAdvisor);
     } catch (error){
