@@ -4,11 +4,14 @@ import { createLearningUnit, getAllLearningUnits, getLearningUnitById, toggleLea
 const router = Router();
 
 //rutas de unidad de aprendizaje
+
 router.get('/learningUnits', getAllLearningUnits);
 router.get('/learningUnit/:id', 
     [
         param('id').isInt().withMessage('El id debe ser un numero entero'),
     ], getLearningUnitById);
+
+// Ruta para crear una materia
 router.post('/learningUnit',
     [
         body('name').isString().notEmpty().withMessage('El nombre es requerido.')

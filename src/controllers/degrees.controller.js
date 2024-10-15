@@ -35,11 +35,11 @@ export const createDegree = async (req, res) => {
 
     try {
         const degree = await degreeRepository.createDegree({
-            degreeName,
-            userCreation,
+            DegreeName: degreeName,
+            UserCreation: userCreation,
             CreatedAt: new Date(),
             UserUpdate: userCreation,
-            UpdatedAt: new Date(),
+            UpdateAt: new Date(),
             Active: true
         });
 
@@ -61,7 +61,7 @@ export const updateDegree = async (req, res) => {
         const updatedDegree = await degreeRepository.updateDegree(id, {
             DegreeName: degreeName, 
             UserUpdate: userUpdate,
-            UpdatedAt: new Date() 
+            UpdateAt: new Date() 
         });
         return res.status(200).json(updatedDegree);
     } catch (error) {
@@ -71,7 +71,7 @@ export const updateDegree = async (req, res) => {
 
 //Cambiar estado de la Carrera
 export const toggleDegreeActivation = async (req, res) => {
-    const { id } = req.paramss;
+    const { id } = req.params;
 
     if (!id)
         return res.status(400).json({ message: 'Faltan campos requeridos.' });
