@@ -39,9 +39,17 @@ export const adviseeRepository = {
     // Actualizar un asesorado
     updateAdvisee: async (enrollment, adviseeData) => {
         try {
-            const updatedAdvisee = await Advisee.update(adviseeData, {
+
+            const [updatedRowsCount] = await Advisee.update(adviseeData, {
                 where: { Enrollment: enrollment }
             });
+    
+            if (updatedRowsCount === 0) {
+                throw new Error('No se encontró ningún asesor con esa matrícula.');
+            }
+    
+            const updatedAdvisee = await Advisee.findOne({ where: { Enrollment: enrollment } });
+            
             return updatedAdvisee;
         } catch (error) {
             throw new Error('Error al actualizar el asesorado: ' + error.message);
