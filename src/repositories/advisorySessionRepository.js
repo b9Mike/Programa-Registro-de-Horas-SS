@@ -39,9 +39,19 @@ export const advisorySessionRepository = {
     // Actualizar una sesión de asesoría
     updateAdvisorySession: async (sessionId, sessionData) => {
         try {
-            const updatedSession = await AdvisorySession.update(sessionData, {
+            // Actualiza la sesión de asesoría
+            const [rowsUpdated] = await AdvisorySession.update(sessionData, {
                 where: { Identity: sessionId }
             });
+
+            // Verifica si alguna fila fue actualizada
+            if (rowsUpdated === 0) {
+                throw new Error('No se encontró la sesión de asesoría con el ID proporcionado o no hubo cambios');
+            }
+
+            // Consulta la sesión actualizada
+            const updatedSession = await AdvisorySession.findOne({ where: { Identity: sessionId } });
+
             return updatedSession;
         } catch (error) {
             throw new Error('Error al actualizar la sesión de asesoría: ' + error.message);

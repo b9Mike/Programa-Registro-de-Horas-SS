@@ -33,16 +33,16 @@ export const createAdvisorySession = async (req, res) => {
 
     try{
         const advisorySession = await advisorySessionRepository.createAdvisorySession({
-            learningUnitIdentity,
-            topic,
-            professor,
-            classType,
-            advisorIdentity,
-            adviseeIdentity,
-            sessionDate,
-            startTime,
+            LearningUnitIdentity: learningUnitIdentity,
+            Topic: topic,
+            Professor: professor,
+            ClassType: classType,
+            AdvisorIdentity: advisorIdentity,
+            AdviseeIdentity: adviseeIdentity,
+            SessionDate: sessionDate,
+            StartTime: startTime,
             EndTime: null,
-            userCreation,
+            UserCreation: userCreation,
             CreatedAt: new Date(),
             UserUpdate: userCreation,
             UpdateAt: new Date(),
@@ -78,7 +78,7 @@ export const updateAdvisorySession = async (req, res) =>{
             StartTime: startTime, 
             EndTime: endTime, 
             UserUpdate: userUpdate, 
-            UpdatedAt: new Date() 
+            UpdateAt: new Date() 
         });
         return res.status(200).json(updatedAdvisorySession);
     } catch (error){
@@ -93,7 +93,7 @@ export const toggleAdvisorySessionActivation = async (req, res) => {
         return res.status(400).json({ message: 'Faltan campos requeridos.'});
 
     try{
-        const result = await advisorySessionRepository.toggleAdvisorySessionActivation(Enrollment);
+        const result = await advisorySessionRepository.toggleAdvisorySessionActivation(sessionId);
         return res.status(200).json(result);
     } catch (error){
         return res.status(500).json({message: error.message});

@@ -5,11 +5,16 @@ import { createAdvisorySession, getAdvisorySessionById, getAllAdvisorySessions, 
 const router = Router();
 
 //rutas de asesorias
+//Ruta para traer todas las asesorias
 router.get('/advisorySessions', getAllAdvisorySessions);
-router.get('/advisorySessions/:sessionId', 
+
+//Ruta para traer una sesion de asesoria por id
+router.get('/advisorySession/:sessionId', 
     [
         param('sessionId').isInt().withMessage('El id debe ser un numero entero'),
     ] , getAdvisorySessionById);
+
+//Ruta para crear una sesion de asesoria
 router.post('/advisorySessions', 
     [
         body('learningUnitIdentity').isInt().notEmpty().withMessage('El id de la materia es requerida.'),
@@ -34,7 +39,9 @@ router.post('/advisorySessions',
         body('userCreation').isInt().notEmpty().withMessage('La matricula del usuario creador es requerida.'),
 
     ], createAdvisorySession);
-router.put('/advisorySessions/:id',
+
+//Ruta para actualizar una sesion de asesoria
+router.put('/advisorySessions/:sessionId',
     [
         param('sessionId').isInt().withMessage('El id debe ser un numero entero'),
 
@@ -64,7 +71,9 @@ router.put('/advisorySessions/:id',
         body('userUpdate').isInt().notEmpty().withMessage('La matricula del usuario creador es requerida.'),
 
     ], updateAdvisorySession);
-router.get('/advisorySessions/:id', 
+
+//Ruta para activar o desactiver una sesion de asesoria
+router.get('/advisorySession/active/:sessionId', 
     [
         param('sessionId').isInt().withMessage('El id debe ser un numero entero'),
     ], toggleAdvisorySessionActivation);
