@@ -4,8 +4,10 @@ import { createLearningUnit, getAllLearningUnits, getLearningUnitById, toggleLea
 const router = Router();
 
 //rutas de unidad de aprendizaje
-
+//Ruta para traer todas las materias
 router.get('/learningUnits', getAllLearningUnits);
+
+//Ruta para traer una materia por el id
 router.get('/learningUnit/:id', 
     [
         param('id').isInt().withMessage('El id debe ser un numero entero'),
@@ -22,6 +24,8 @@ router.post('/learningUnit',
         body('userCreation').isInt().notEmpty().withMessage('La matricula de usuario creador es requerido.'),
 
     ], createLearningUnit);
+
+//Ruta para actualizar materias
 router.put('/learningUnit/:id', 
     [
         param('id').isInt().withMessage('El id debe ser un numero entero'),
@@ -34,10 +38,12 @@ router.put('/learningUnit/:id',
         body('userUpdate').isInt().notEmpty().withMessage('La matricula de usuario que actualiza es requerido.'),
 
     ], updateLearningUnit);
-router.get('/learningUnit/:id', 
+
+//Ruta para activar o desactivar una materia
+router.get('/learningUnit/active/:id', 
     [
         param('id').isInt().withMessage('El id debe ser un numero entero'),
-
+        
     ], toggleLearningUnitActivation);
 
 export default router

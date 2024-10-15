@@ -29,14 +29,14 @@ export const getLearningUnitById = async (req, res) => {
 export const createLearningUnit = async (req, res) => {
     const { name, degreeIdentity, userCreation } = req.body;
 
-    if (!id || !name || !degreeIdentity || !userCreation)
+    if (!name || !degreeIdentity || !userCreation)
         return res.status(400).json({ message: "Faltan campos requeridos." });
 
     try {
         const learningUnit = await learningUnitRepository.createLearningUnit({
-            name,
-            degreeIdentity,
-            userCreation,
+            Name: name,
+            DegreeIdentity: degreeIdentity,
+            UserCreation: userCreation,
             CreatedAt: new Date(),
             UserUpdate: userCreation,
             UpdateAt: new Date(),
@@ -62,7 +62,7 @@ export const updateLearningUnit = async (req, res) => {
                 Name: name,
                 DegreeIdentity: degreeIdentity,
                 UserUpdate: userUpdate,
-                UpdatedAt: new Date(),
+                UpdateAt: new Date(),
             });
         return res.status(200).json(updatedLearningUnit);
     } catch (error) {
