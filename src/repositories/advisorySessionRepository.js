@@ -82,7 +82,7 @@ export const advisorySessionRepository = {
         }
     },
 
-    getAdvisorySessionByAdvisor: async (enrollment) => {
+    getAdvisorySessionsByAdvisor: async (enrollment) => {
         try {
             // Consulta para obtener las sesiones de asesoría del asesor con su enrollment
             const advisories = await AdvisorySession.findAll({

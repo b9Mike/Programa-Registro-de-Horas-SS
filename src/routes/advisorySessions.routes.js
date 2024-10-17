@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { body, param } from "express-validator";
-import { createAdvisorySession, getAdvisorySessionById, getAllAdvisorySessions, toggleAdvisorySessionActivation, updateAdvisorySession, getAdvisorySessionByAdvisor} from "../controllers/advisorySession.controller.js";
+import { createAdvisorySession, getAdvisorySessionById, getAllAdvisorySessions, toggleAdvisorySessionActivation, updateAdvisorySession, getAdvisorySessionsByAdvisor} from "../controllers/advisorySession.controller.js";
 
 const router = Router();
 
@@ -15,7 +15,7 @@ router.get('/advisorySession/:sessionId',
     ] , getAdvisorySessionById);
 
 //Ruta para crear una sesion de asesoria
-router.post('/advisorySessions', 
+router.post('/advisorySession', 
     [
         body('learningUnitIdentity').isInt().notEmpty().withMessage('El id de la materia es requerida.'),
         
@@ -41,7 +41,7 @@ router.post('/advisorySessions',
     ], createAdvisorySession);
 
 //Ruta para actualizar una sesion de asesoria
-router.put('/advisorySessions/:sessionId',
+router.put('/advisorySession/:sessionId',
     [
         param('sessionId').isInt().withMessage('El id debe ser un numero entero'),
 
@@ -79,9 +79,9 @@ router.get('/advisorySession/active/:sessionId',
     ], toggleAdvisorySessionActivation);
 
 //ruta para obtener las asesorías de un asesor específico
-router.get('/advisorySession/advisor/:enrollment', 
+router.get('/advisorySessions/advisor/:enrollment', 
     [
         param('enrollment').isInt().withMessage('El id debe ser un numero entero'),
-    ], getAdvisorySessionByAdvisor);
+    ], getAdvisorySessionsByAdvisor);
 
 export default router

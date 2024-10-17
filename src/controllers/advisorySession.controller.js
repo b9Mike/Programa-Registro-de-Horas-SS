@@ -101,11 +101,11 @@ export const toggleAdvisorySessionActivation = async (req, res) => {
     
 }
 
-export const getAdvisorySessionByAdvisor = async (req, res) => {
+export const getAdvisorySessionsByAdvisor = async (req, res) => {
     const { enrollment } = req.params;
 
     try {
-        const advisories = await advisorySessionRepository.getAdvisorySessionByAdvisor(enrollment);
+        const advisories = await advisorySessionRepository.getAdvisorySessionsByAdvisor(enrollment);
 
         if (!advisories || advisories.length === 0) {
             return res.status(404).json({ message: 'No se encontraron asesorías para este asesor.' });

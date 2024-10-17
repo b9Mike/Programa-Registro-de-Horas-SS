@@ -14,7 +14,7 @@ router.get('/advisor/:enrollment',
     ], getAdvisorByEnrollment);
 
 //Rutas para crear un asesor
-router.post('/advisors', 
+router.post('/advisor', 
     [
         body('enrollment').isInt().notEmpty().withMessage('La matricula es requerida.'),
 
@@ -31,7 +31,7 @@ router.post('/advisors',
     ], createAdvisor);
 
 //Ruta para actualizar asesor
-router.put('/advisors/:enrollment', 
+router.put('/advisor/:enrollment', 
     [
         param('enrollment').isInt().withMessage('La matricula debe ser un numero entero'),
         

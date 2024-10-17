@@ -14,7 +14,7 @@ router.get('/advisee/:enrollment',
     ], getAdviseById);
 
 // Ruta para crear asesorado
-router.post('/advisees',
+router.post('/advisee',
     [
         body('enrollment').isInt().notEmpty().withMessage('La matricula es requerida.'),
 
@@ -31,7 +31,7 @@ router.post('/advisees',
     ], createAdvisee);
 
 //Ruta para actualizar asesorado
-router.put('/advisees/:enrollment', 
+router.put('/advisee/:enrollment', 
     [
         param('enrollment').isInt().withMessage('La matricula debe ser un numero entero'),
         

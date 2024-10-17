@@ -14,7 +14,7 @@ router.get('/degree/:id',
     ], getDegreeById);
 
 //Ruta para crear una carrera
-router.post('/degrees', 
+router.post('/degree', 
     [
         body('degreeName').isString().notEmpty().withMessage('El nombre de la carrera es requerida.')
             .isLength({ min: 1, max: 255 }).withMessage('El nombre de la carrera debe tener entre 1 a 255 caracteres'),
@@ -24,7 +24,7 @@ router.post('/degrees',
     ], createDegree);
 
 //Ruta para actualizar carrera
-router.put('/degrees/:id', 
+router.put('/degree/:id', 
     [
         param('id').isInt().withMessage('El id debe ser un numero entero'),
         
