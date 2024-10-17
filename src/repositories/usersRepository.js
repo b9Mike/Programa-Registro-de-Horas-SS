@@ -15,13 +15,12 @@ export const userRepository = {
     },
 
     // Funcion de login
-    getUserByEnrollment: async (enrollment, password) => {
+    getUserByEnrollment: async (enrollment) => {
         try {
             // Buscamos al usuario por la matrícula y la contraseña
             const user = await User.findOne({
                 where: {
                     Enrollment: enrollment,
-                    Password: password
                 },
             });
     

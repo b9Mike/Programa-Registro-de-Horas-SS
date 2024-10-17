@@ -38,7 +38,7 @@ export const logIn = async (req, res) => {
         /*
         const user = await userRepository.getUserByEnrollment(enrollment, password);
         */
-        res.status(200).json(user);
+        res.status(200).json(token);
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
