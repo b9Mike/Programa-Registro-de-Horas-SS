@@ -1,8 +1,11 @@
 import { advisorySessionRepository } from '../repositories/advisorySessionRepository.js';
+import { getDateRange } from '../services/advisorySession.service.js';
 
 export const getAllAdvisorySessions = async (req, res) => {
+    const { range } = req.query;
+    let { start, end } = getDateRange(range);
     try{
-        const advisorySessions = await advisorySessionRepository.getAllAdvisorySessions();
+        const advisorySessions = await advisorySessionRepository.getAllAdvisorySessions(start, end);
         return res.status(200).json(advisorySessions);
     } catch (error){
         return res.status(500).json({message: error.message});

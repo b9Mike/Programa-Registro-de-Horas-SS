@@ -1,5 +1,7 @@
 //Repository de sesion de asesorias
 import { AdvisorySession } from "../models/AdvisorySession.js";
+import { Op } from "sequelize";
+import { sequelize } from "../database/database.js";
 
 //Funciones para interactuar con la tabla de sesion de asesorias
 export const advisorySessionRepository = {
@@ -15,10 +17,79 @@ export const advisorySessionRepository = {
     },
 
     // Obtener todas las sesiones de asesoría
-    getAllAdvisorySessions: async () => {
+    getAllAdvisorySessions: async (startDate, endDate) => {
+        const whereClause = {};
+
+        if (startDate || endDate) {
+            whereClause.SessionDate = {};
+            if (startDate) {
+                whereClause.SessionDate[Op.gte] = new Date(startDate);
+            }
+            if (endDate) {
+                whereClause.SessionDate[Op.lt] = new Date(endDate);
+            }
+        }
+
         try {
-            const sessions = await AdvisorySession.findAll();
-            return sessions;
+            
+            const totalSessions = await AdvisorySession.count({
+                where: whereClause,
+            });
+
+            const morningCount = await AdvisorySession.count({
+                where: {
+                    [Op.and]: [
+                        whereClause, // Incluye las condiciones de whereClause
+                        {
+                            StartTime: {
+                                [Op.and]: [
+                                    { [Op.gte]: '08:00:00' }, // Hora de inicio mayor o igual a 8 AM
+                                    { [Op.lt]: '12:00:00' }   // Hora de inicio menor a 12 PM
+                                ]
+                            }
+                        }
+                    ]
+                }
+            });
+            console.log("Aqui");
+            // Contar sesiones de 12 PM a 4 PM
+            const afternoonCount = await AdvisorySession.count({
+                where: {
+                    [Op.and]: [
+                        whereClause,
+                        {
+                            StartTime: {
+                                [Op.and]: [
+                                    { [Op.gte]: '12:00:00' }, // Hora de inicio mayor o igual a 12 PM
+                                    { [Op.lt]: '16:00:00' }   // Hora de inicio menor a 4 PM
+                                ]
+                            }
+                        }
+                    ]
+                }
+            });
+            
+            // Contar sesiones de 4 PM a 8 PM
+            const eveningCount = await AdvisorySession.count({
+                where: {
+                    [Op.and]: [
+                        whereClause,
+                        {
+                            StartTime: {
+                                [Op.and]: [
+                                    { [Op.gte]: '16:00:00' }, // Hora de inicio mayor o igual a 4 PM
+                                    { [Op.lt]: '20:00:00' }   // Hora de inicio menor a 8 PM
+                                ]
+                            }
+                        }
+                    ]
+                }
+            });
+
+            const sessions = await AdvisorySession.findAll({
+                where: whereClause,
+            });
+            return {totalSessions, morningCount, afternoonCount, eveningCount, sessions};
         } catch (error) {
             throw new Error('Error al obtener las sesiones de asesoría: ' + error.message);
         }
