@@ -56,11 +56,11 @@ export const AdvisorySession = sequelize.define('AdvisorySessions', {
         allowNull: false,
     },
     StartTime: {
-        type: DataTypes.DATE,
+        type: DataTypes.TIME,
         allowNull: false,
     },
     EndTime: {
-        type: DataTypes.DATE,
+        type: DataTypes.TIME,
         allowNull: true,
     },
     UserCreation: {
