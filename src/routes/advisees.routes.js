@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { body, param } from "express-validator";
 import { createAdvisee, getAdviseById, getAllAdvisees, toggleAdviseeActivation, updateAdvisee } from "../controllers/advisees.controller.js";
+import { validateRequest } from "../middlewares/routerValidation.middleware.js";
 const router = Router();
 
 //rutas para asesorados
@@ -11,7 +12,7 @@ router.get('/advisees', getAllAdvisees);
 router.get('/advisee/:enrollment', 
     [
         param('enrollment').isInt().withMessage('La matricula debe ser un numero entero'),
-    ], getAdviseById);
+    ], validateRequest, getAdviseById);
 
 // Ruta para crear asesorado
 router.post('/advisee',
@@ -28,7 +29,7 @@ router.post('/advisee',
 
         body('userCreation').isInt().notEmpty().withMessage('La matricula del usuario creador es requerida.'),
 
-    ], createAdvisee);
+    ], validateRequest, createAdvisee);
 
 //Ruta para actualizar asesorado
 router.put('/advisee/:enrollment', 
@@ -45,12 +46,12 @@ router.put('/advisee/:enrollment',
 
         body('userUpdate').isInt().notEmpty().withMessage('La matricula del usuario que actualiza es requerida.'),
 
-    ], updateAdvisee);
+    ], validateRequest, updateAdvisee);
 
 // Ruta para activar o desactivar un asesorado
 router.get('/advisee/active/:enrollment', 
     [
         param('enrollment').isInt().withMessage('La matricula debe ser un numero entero'),
-    ], toggleAdviseeActivation);
+    ], validateRequest, toggleAdviseeActivation);
 
 export default router

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { body, param } from "express-validator";
 import { createAdvisorySession, getAdvisorySessionById, getAllAdvisorySessions, toggleAdvisorySessionActivation, updateAdvisorySession, getAdvisorySessionsByAdvisor} from "../controllers/advisorySession.controller.js";
-
+import { validateRequest } from "../middlewares/routerValidation.middleware.js";
 const router = Router();
 
 //rutas de asesorias
@@ -12,7 +12,7 @@ router.get('/advisorySessions', getAllAdvisorySessions);
 router.get('/advisorySession/:sessionId', 
     [
         param('sessionId').isInt().withMessage('El id debe ser un numero entero'),
-    ] , getAdvisorySessionById);
+    ], validateRequest, getAdvisorySessionById);
 
 //Ruta para crear una sesion de asesoria
 router.post('/advisorySession', 
@@ -38,7 +38,7 @@ router.post('/advisorySession',
 
         body('userCreation').isInt().notEmpty().withMessage('La matricula del usuario creador es requerida.'),
 
-    ], createAdvisorySession);
+    ], validateRequest, createAdvisorySession);
 
 //Ruta para actualizar una sesion de asesoria
 router.put('/advisorySession/:sessionId',
@@ -70,18 +70,18 @@ router.put('/advisorySession/:sessionId',
 
         body('userUpdate').isInt().notEmpty().withMessage('La matricula del usuario creador es requerida.'),
 
-    ], updateAdvisorySession);
+    ], validateRequest, updateAdvisorySession);
 
 //Ruta para activar o desactiver una sesion de asesoria
 router.get('/advisorySession/active/:sessionId', 
     [
         param('sessionId').isInt().withMessage('El id debe ser un numero entero'),
-    ], toggleAdvisorySessionActivation);
+    ], validateRequest, toggleAdvisorySessionActivation);
 
 //ruta para obtener las asesorías de un asesor específico
 router.get('/advisorySessions/advisor/:enrollment', 
     [
         param('enrollment').isInt().withMessage('El id debe ser un numero entero'),
-    ], getAdvisorySessionsByAdvisor);
+    ], validateRequest, getAdvisorySessionsByAdvisor);
 
 export default router

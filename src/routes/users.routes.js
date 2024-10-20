@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { body, param } from "express-validator";
 import { getAllUsers, logIn, register, updateUser, toggleUserActivation } from '../controllers/users.controller.js'
+import { validateRequest } from "../middlewares/routerValidation.middleware.js";
 const router = Router();
 
 //rutas para el usuario
@@ -14,7 +15,7 @@ router.post('/login/',
         body('password').isString().notEmpty().withMessage('La contraseña es requerida.')
             .isLength({ min: 5, max: 255 }).withMessage('La contraseña debe tener entre 5 a 255 caracteres'),
 
-    ], logIn);
+    ], validateRequest, logIn);
 //Ruta para registrar usuario
 router.post('/register/',
     [
@@ -30,7 +31,7 @@ router.post('/register/',
 
         body('userCreation').isInt().notEmpty().withMessage('La matricula del usuario creador es requerida.'),
 
-    ], register);
+    ], validateRequest, register);
 //Ruta para actualizar usuario
 router.put('/user/:enrollment',
     [
@@ -46,12 +47,12 @@ router.put('/user/:enrollment',
 
         body('userUpdate').isInt().notEmpty().withMessage('La matricula del usuario que actualiza es requerida.'),
 
-    ], updateUser);
+    ], validateRequest, updateUser);
 //Ruta para activar o desactivar usuario
 router.get('/user/active/:enrollment',
     [
         param('enrollment').isInt().withMessage('La matricula debe ser un número entero.'),
 
-    ], toggleUserActivation);
+    ], validateRequest, toggleUserActivation);
 
 export default router

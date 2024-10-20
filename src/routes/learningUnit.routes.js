@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { body, param } from "express-validator";
 import { createLearningUnit, getAllLearningUnits, getLearningUnitById, toggleLearningUnitActivation, updateLearningUnit } from "../controllers/learningUnits.controller.js";
+import { validateRequest } from "../middlewares/routerValidation.middleware.js";
 const router = Router();
 
 //rutas de unidad de aprendizaje
@@ -11,7 +12,7 @@ router.get('/learningUnits', getAllLearningUnits);
 router.get('/learningUnit/:id', 
     [
         param('id').isInt().withMessage('El id debe ser un numero entero'),
-    ], getLearningUnitById);
+    ], validateRequest, getLearningUnitById);
 
 // Ruta para crear una materia
 router.post('/learningUnit',
@@ -23,7 +24,7 @@ router.post('/learningUnit',
 
         body('userCreation').isInt().notEmpty().withMessage('La matricula de usuario creador es requerido.'),
 
-    ], createLearningUnit);
+    ], validateRequest, createLearningUnit);
 
 //Ruta para actualizar materias
 router.put('/learningUnit/:id', 
@@ -37,13 +38,13 @@ router.put('/learningUnit/:id',
 
         body('userUpdate').isInt().notEmpty().withMessage('La matricula de usuario que actualiza es requerido.'),
 
-    ], updateLearningUnit);
+    ], validateRequest, updateLearningUnit);
 
 //Ruta para activar o desactivar una materia
 router.get('/learningUnit/active/:id', 
     [
         param('id').isInt().withMessage('El id debe ser un numero entero'),
         
-    ], toggleLearningUnitActivation);
+    ], validateRequest, toggleLearningUnitActivation);
 
 export default router

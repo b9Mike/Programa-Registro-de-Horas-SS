@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { body, param } from "express-validator";
 import { getDegrees, getDegreeById, createDegree, updateDegree, toggleDegreeActivation } from '../controllers/degrees.controller.js'
+import { validateRequest } from "../middlewares/routerValidation.middleware.js";
 const router = Router();
 
 //rutas para carrera
@@ -11,7 +12,7 @@ router.get('/degrees', getDegrees);
 router.get('/degree/:id',
     [
         param('id').isInt().withMessage('El id debe ser un numero entero'),
-    ], getDegreeById);
+    ], validateRequest, getDegreeById);
 
 //Ruta para crear una carrera
 router.post('/degree', 
@@ -21,7 +22,7 @@ router.post('/degree',
 
         body('userCreation').isInt().notEmpty().withMessage('La matricula del usuario creador es requerida.'),
 
-    ], createDegree);
+    ], validateRequest, createDegree);
 
 //Ruta para actualizar carrera
 router.put('/degree/:id', 
@@ -33,13 +34,13 @@ router.put('/degree/:id',
 
         body('userUpdate').isInt().notEmpty().withMessage('La matricula del usuario que actualiza es requerida.'),
 
-    ], updateDegree);
+    ], validateRequest, updateDegree);
 
 // Ruta para activar o desactivar carrera 
 router.get('/degree/active/:id', 
     [
         param('id').isInt().withMessage('El id debe ser un numero entero'),
 
-    ], toggleDegreeActivation);
+    ], validateRequest, toggleDegreeActivation);
 
 export default router
