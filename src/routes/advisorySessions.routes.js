@@ -34,7 +34,7 @@ router.post('/advisorySession',
 
         body('sessionDate').isDate().notEmpty().withMessage('El dia de la asesoria  es requerida.'),
 
-        body('startTime').isISO8601().notEmpty().withMessage('Los datos de inicio de la asesoria es requerida.'),
+        body('startTime').matches(/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/).notEmpty().withMessage('Los datos de inicio de la asesoria es requerida.'),
 
         body('userCreation').isInt().notEmpty().withMessage('La matricula del usuario creador es requerida.'),
 

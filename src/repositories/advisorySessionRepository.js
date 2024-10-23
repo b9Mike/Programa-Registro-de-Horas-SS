@@ -1,7 +1,6 @@
 //Repository de sesion de asesorias
 import { AdvisorySession } from "../models/AdvisorySession.js";
 import { Op } from "sequelize";
-import { sequelize } from "../database/database.js";
 
 //Funciones para interactuar con la tabla de sesion de asesorias
 export const advisorySessionRepository = {
@@ -20,26 +19,29 @@ export const advisorySessionRepository = {
     getAllAdvisorySessions: async (startDate, endDate) => {
         const whereClause = {};
 
+        //Si existe un rango de fecha se aplicara en la busqueda
+        //Si no existe un rango se regresan todas las asesorias
         if (startDate || endDate) {
             whereClause.SessionDate = {};
             if (startDate) {
-                whereClause.SessionDate[Op.gte] = new Date(startDate);
+                whereClause.SessionDate[Op.gte] = startDate;
             }
             if (endDate) {
-                whereClause.SessionDate[Op.lt] = new Date(endDate);
+                whereClause.SessionDate[Op.lt] = endDate;
             }
         }
 
         try {
-            
+            //Contador de todas las asesorias en el rango
             const totalSessions = await AdvisorySession.count({
                 where: whereClause,
             });
 
+            //Contador de todas las asesorias del turno matutino en el rango
             const morningCount = await AdvisorySession.count({
                 where: {
                     [Op.and]: [
-                        whereClause, // Incluye las condiciones de whereClause
+                        whereClause,
                         {
                             StartTime: {
                                 [Op.and]: [
@@ -51,8 +53,8 @@ export const advisorySessionRepository = {
                     ]
                 }
             });
-            console.log("Aqui");
-            // Contar sesiones de 12 PM a 4 PM
+            
+            //Contador de todas las asesorias del turno intermedio en el rango
             const afternoonCount = await AdvisorySession.count({
                 where: {
                     [Op.and]: [
@@ -69,7 +71,7 @@ export const advisorySessionRepository = {
                 }
             });
             
-            // Contar sesiones de 4 PM a 8 PM
+            //Contador de todas las asesorias del turno vespertino en el rango
             const eveningCount = await AdvisorySession.count({
                 where: {
                     [Op.and]: [
@@ -86,9 +88,11 @@ export const advisorySessionRepository = {
                 }
             });
 
+            //Lista con todas las asesorias en el rango
             const sessions = await AdvisorySession.findAll({
                 where: whereClause,
             });
+
             return {totalSessions, morningCount, afternoonCount, eveningCount, sessions};
         } catch (error) {
             throw new Error('Error al obtener las sesiones de asesoría: ' + error.message);
