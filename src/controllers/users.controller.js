@@ -5,6 +5,9 @@ import { encryptPassword, comparePassword, generateToken } from "../services/aut
 
 //Obtener todos los usuarios
 export const getAllUsers = async (req, res) => {
+    if(req.user.Type != 1 || !req.user.Active)
+        return res.status(403).json({ message: "No autorizado." });
+
     try {
         const users = await userRepository.getAllUsers();
         res.status(200).json(users);
@@ -35,10 +38,7 @@ export const logIn = async (req, res) => {
 
         // Generar JWT
         const token = generateToken(user.Enrollment);
-        /*
-        const user = await userRepository.getUserByEnrollment(enrollment, password);
-        */
-        res.status(200).json(token);
+        res.status(200).header('Authorization', `Bearer ${token}`).json({ message: 'Inicio de sesión exitoso' });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -66,21 +66,6 @@ export const register = async (req, res) => {
               UpdatedAt: new Date(),
               Active: true // Valor por defecto
           });
-
-        /*
-        const user = await userRepository.createUser({
-            Enrollment: enrollment,
-            Name: name,
-            Password: password,
-            Type: type,
-            UserCreation: userCreation,
-            UserUpdate: userCreation,
-            CreatedAt: new Date(),
-            UpdatedAt: new Date(),
-            Active: true // Valor por defecto
-        });
-        */
-
         res.status(200).json(user);
     } catch (error) {
         return res.status(500).json({ message: error.message });
@@ -89,8 +74,12 @@ export const register = async (req, res) => {
 
 //Actualizar usuario
 export const updateUser = async (req, res) => {
+    if(req.user.Type != 1 || !req.user.Active)
+        return res.status(403).json({ message: "No autorizado." });
+    
     const { enrollment } = req.params;
     const { name, password, type, userUpdate } = req.body;
+    
     if (!enrollment || !name || !password || !type || !userUpdate)
         return res.status(400).json({ message: "Faltan campos requeridos." });
 
@@ -105,15 +94,7 @@ export const updateUser = async (req, res) => {
             UserUpdate: userUpdate,
             UpdatedAt: new Date(),
         });
-        /*
-        const user = await userRepository.updateUser(enrollment, {
-            Name: name,
-            Password: password,
-            Type: type,
-            UserUpdate: userUpdate,
-            UpdatedAt: new Date(),
-        });
-        */
+
         res.status(200).json(user);
     } catch (error) {
         return res.status(500).json({ message: error.message });
@@ -122,6 +103,9 @@ export const updateUser = async (req, res) => {
 
 //Cambiar estado del usuario
 export const toggleUserActivation = async (req, res) => {
+    if(req.user.Type != 1  || !req.user.Active)
+        return res.status(403).json({ message: "No autorizado." });
+
     const { enrollment } = req.params;
 
     try {

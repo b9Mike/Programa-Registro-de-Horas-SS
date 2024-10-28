@@ -15,7 +15,7 @@ export const getLearningUnitById = async (req, res) => {
     const { id } = req.params;
 
     if (!id)
-        return res.status(400).json({ message: "Faltan campos requeridos." });
+        return res.status(403).json({ message: "Faltan campos requeridos." });
 
     try {
         const learningUnit = await learningUnitRepository.getLearningUnitById(id);
@@ -27,6 +27,9 @@ export const getLearningUnitById = async (req, res) => {
 
 //Crear materia
 export const createLearningUnit = async (req, res) => {
+    if(req.user.Type != 1  || !req.user.Active)
+        return res.status(403).json({ message: "No autorizado." });
+
     const { name, degreeIdentity, userCreation } = req.body;
 
     if (!name || !degreeIdentity || !userCreation)
@@ -51,6 +54,9 @@ export const createLearningUnit = async (req, res) => {
 
 //Actualizar materia
 export const updateLearningUnit = async (req, res) => {
+    if(req.user.Type != 1  || !req.user.Active)
+        return res.status(403).json({ message: "No autorizado." });
+
     const { id } = req.params;
     const { name, degreeIdentity, userUpdate } = req.body;
 
@@ -72,6 +78,9 @@ export const updateLearningUnit = async (req, res) => {
 
 //Cambiar estado de la materia
 export const toggleLearningUnitActivation = async (req, res) => {
+    if(req.user.Type != 1  || !req.user.Active)
+        return res.status(403).json({ message: "No autorizado." });
+
     const { id } = req.params;
 
     if (!id)

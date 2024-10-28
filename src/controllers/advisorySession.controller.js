@@ -27,6 +27,9 @@ export const getAdvisorySessionById = async (req, res) =>{
 }
 
 export const createAdvisorySession = async (req, res) => {
+    if(!(req.user.Type == 1 || req.use.Type == 2) || !req.user.Active)
+        return res.status(403).json({ message: "No autorizado." });
+
     const { learningUnitIdentity, topic, professor, classType, 
         advisorIdentity, adviseeIdentity, sessionDate, startTime, userCreation } = req.body;
     
@@ -59,6 +62,9 @@ export const createAdvisorySession = async (req, res) => {
 }
 
 export const updateAdvisorySession = async (req, res) =>{ 
+    if(!(req.user.Type == 1 || req.use.Type == 2) || !req.user.Active)
+        return res.status(403).json({ message: "No autorizado." });
+
     const { sessionId } = req.params;
     const { learningUnitIdentity, topic, professor, classType, 
         advisorIdentity, adviseeIdentity, sessionDate, startTime, 
@@ -90,6 +96,9 @@ export const updateAdvisorySession = async (req, res) =>{
 }
 
 export const toggleAdvisorySessionActivation = async (req, res) => {
+    if(req.user.Type != 1 || !req.user.Active)
+        return res.status(403).json({ message: "No autorizado." });
+
     const { sessionId } = req.params;
 
     if(!sessionId)

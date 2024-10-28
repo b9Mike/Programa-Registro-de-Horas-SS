@@ -24,6 +24,9 @@ export const getAdvisorByEnrollment = async (req, res) => {
 }
 
 export const createAdvisor = async (req, res) => {
+    if(req.user.Type != 1 || !req.user.Active)
+        return res.status(403).json({ message: "No autorizado." });
+
     const {enrollment, gender, name, degreeIdentity, userCreation } = req.body;
     
     if(!enrollment || !gender || !name || !degreeIdentity || !userCreation)
@@ -49,6 +52,9 @@ export const createAdvisor = async (req, res) => {
 }
 
 export const updateAdvisor = async (req, res) => {
+    if(req.user.Type != 1 || !req.user.Active)
+        return res.status(403).json({ message: "No autorizado." });
+
     const { enrollment } = req.params;
     const { gender, name, degreeIdentity, userUpdate } = req.body;
 
@@ -70,6 +76,9 @@ export const updateAdvisor = async (req, res) => {
 }
 
 export const toggleAdvisorActivation = async (req, res) => {
+    if(req.user.Type != 1 || !req.user.Active)
+        return res.status(403).json({ message: "No autorizado." });
+
     const { enrollment } = req.params;
 
     if(!enrollment)

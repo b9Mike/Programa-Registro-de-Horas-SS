@@ -2,11 +2,12 @@ import { Router } from "express";
 import { body, param } from "express-validator";
 import { getAllUsers, logIn, register, updateUser, toggleUserActivation } from '../controllers/users.controller.js'
 import { validateRequest } from "../middlewares/routerValidation.middleware.js";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
 const router = Router();
 
 //rutas para el usuario
 //Ruta para traer todos los usuarios existentes
-router.get('/users', getAllUsers);
+router.get('/users', authMiddleware, getAllUsers);
 //Ruta para login
 router.post('/login/',
     [
@@ -47,12 +48,12 @@ router.put('/user/:enrollment',
 
         body('userUpdate').isInt().notEmpty().withMessage('La matricula del usuario que actualiza es requerida.'),
 
-    ], validateRequest, updateUser);
+    ], validateRequest, authMiddleware, updateUser);
 //Ruta para activar o desactivar usuario
 router.get('/user/active/:enrollment',
     [
         param('enrollment').isInt().withMessage('La matricula debe ser un número entero.'),
 
-    ], validateRequest, toggleUserActivation);
+    ], validateRequest, authMiddleware, toggleUserActivation);
 
 export default router

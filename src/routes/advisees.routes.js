@@ -2,17 +2,18 @@ import { Router } from "express";
 import { body, param } from "express-validator";
 import { createAdvisee, getAdviseById, getAllAdvisees, toggleAdviseeActivation, updateAdvisee } from "../controllers/advisees.controller.js";
 import { validateRequest } from "../middlewares/routerValidation.middleware.js";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
 const router = Router();
 
 //rutas para asesorados
 // Ruta para traer todos los asesorados
-router.get('/advisees', getAllAdvisees);
+router.get('/advisees', authMiddleware, getAllAdvisees);
 
 //Ruta para traer un asesorado por id
-router.get('/advisee/:enrollment', 
+router.get('/advisee/:enrollment',
     [
         param('enrollment').isInt().withMessage('La matricula debe ser un numero entero'),
-    ], validateRequest, getAdviseById);
+    ], validateRequest, authMiddleware, getAdviseById);
 
 // Ruta para crear asesorado
 router.post('/advisee',
@@ -29,13 +30,13 @@ router.post('/advisee',
 
         body('userCreation').isInt().notEmpty().withMessage('La matricula del usuario creador es requerida.'),
 
-    ], validateRequest, createAdvisee);
+    ], validateRequest, authMiddleware, createAdvisee);
 
 //Ruta para actualizar asesorado
-router.put('/advisee/:enrollment', 
+router.put('/advisee/:enrollment',
     [
         param('enrollment').isInt().withMessage('La matricula debe ser un numero entero'),
-        
+
         body('gender').isString().notEmpty().withMessage('El genero es requerida.')
             .isLength({ min: 1, max: 255 }).withMessage('La contraseña debe tener entre 1 a 255 caracteres'),
 
@@ -46,12 +47,12 @@ router.put('/advisee/:enrollment',
 
         body('userUpdate').isInt().notEmpty().withMessage('La matricula del usuario que actualiza es requerida.'),
 
-    ], validateRequest, updateAdvisee);
+    ], validateRequest, authMiddleware, updateAdvisee);
 
 // Ruta para activar o desactivar un asesorado
-router.get('/advisee/active/:enrollment', 
+router.get('/advisee/active/:enrollment',
     [
         param('enrollment').isInt().withMessage('La matricula debe ser un numero entero'),
-    ], validateRequest, toggleAdviseeActivation);
+    ], validateRequest, authMiddleware, toggleAdviseeActivation);
 
 export default router

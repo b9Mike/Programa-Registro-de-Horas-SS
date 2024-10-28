@@ -28,6 +28,9 @@ export const getDegreeById = async (req, res) => {
 
 //Crear Carrera
 export const createDegree = async (req, res) => {
+    if(req.user.Type != 1 || !req.user.Active)
+        return res.status(403).json({ message: "No autorizado." });
+
     const { degreeName, userCreation } = req.body;
 
     if (!degreeName || !userCreation)
@@ -51,6 +54,9 @@ export const createDegree = async (req, res) => {
 
 //Actualizar Carrera
 export const updateDegree = async (req, res) => {
+    if(req.user.Type != 1 || !req.user.Active)
+        return res.status(403).json({ message: "No autorizado." });
+
     const { id } = req.params;
     const { degreeName, userUpdate } = req.body;
 
@@ -71,6 +77,9 @@ export const updateDegree = async (req, res) => {
 
 //Cambiar estado de la Carrera
 export const toggleDegreeActivation = async (req, res) => {
+    if(req.user.Type != 1 || !req.user.Active)
+        return res.status(403).json({ message: "No autorizado." });
+
     const { id } = req.params;
 
     if (!id)
