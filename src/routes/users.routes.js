@@ -30,9 +30,7 @@ router.post('/register/',
 
         body('type').isInt().notEmpty().withMessage('El tipo de usuario es requerido.'),
 
-        body('userCreation').isInt().notEmpty().withMessage('La matricula del usuario creador es requerida.'),
-
-    ], validateRequest, register);
+    ], validateRequest, authMiddleware, register);
 //Ruta para actualizar usuario
 router.put('/user/:enrollment',
     [
@@ -45,8 +43,6 @@ router.put('/user/:enrollment',
             .isLength({ min: 5, max: 255 }).withMessage('La contraseña debe tener entre 5 a 255 caracteres'),
 
         body('type').isInt().notEmpty().withMessage('El tipo de usuario es requerido.'),
-
-        body('userUpdate').isInt().notEmpty().withMessage('La matricula del usuario que actualiza es requerida.'),
 
     ], validateRequest, authMiddleware, updateUser);
 //Ruta para activar o desactivar usuario

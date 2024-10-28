@@ -37,8 +37,6 @@ router.post('/advisorySession',
 
         body('startTime').matches(/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/).notEmpty().withMessage('Los datos de inicio de la asesoria es requerida.'),
 
-        body('userCreation').isInt().notEmpty().withMessage('La matricula del usuario creador es requerida.'),
-
     ], validateRequest, authMiddleware, createAdvisorySession);
 
 //Ruta para actualizar una sesion de asesoria
@@ -68,8 +66,6 @@ router.put('/advisorySession/:sessionId',
         body('endTime').isISO8601()
             .optional({ nullable: true })
             .withMessage('Los datos de inicio de la asesoria es requerida.'),
-
-        body('userUpdate').isInt().notEmpty().withMessage('La matricula del usuario creador es requerida.'),
 
     ], validateRequest, authMiddleware, updateAdvisorySession);
 

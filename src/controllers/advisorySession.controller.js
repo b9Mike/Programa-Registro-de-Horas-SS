@@ -31,10 +31,10 @@ export const createAdvisorySession = async (req, res) => {
         return res.status(403).json({ message: "No autorizado." });
 
     const { learningUnitIdentity, topic, professor, classType, 
-        advisorIdentity, adviseeIdentity, sessionDate, startTime, userCreation } = req.body;
+        advisorIdentity, adviseeIdentity, sessionDate, startTime } = req.body;
     
     if(!learningUnitIdentity || !topic || !professor || !classType 
-        || !advisorIdentity || !adviseeIdentity || !sessionDate || !startTime || !userCreation)
+        || !advisorIdentity || !adviseeIdentity || !sessionDate || !startTime)
         return res.status(400).json({ message: 'Faltan campos requeridos.'});
 
     try{
@@ -48,9 +48,9 @@ export const createAdvisorySession = async (req, res) => {
             SessionDate: sessionDate,
             StartTime: startTime,
             EndTime: null,
-            UserCreation: userCreation,
+            UserCreation: req.user.id,
             CreatedAt: new Date(),
-            UserUpdate: userCreation,
+            UserUpdate: req.user.id,
             UpdateAt: new Date(),
             Active: true
         });
@@ -68,11 +68,11 @@ export const updateAdvisorySession = async (req, res) =>{
     const { sessionId } = req.params;
     const { learningUnitIdentity, topic, professor, classType, 
         advisorIdentity, adviseeIdentity, sessionDate, startTime, 
-        endTime, userUpdate } = req.body;
+        endTime } = req.body;
     
     if(!sessionId || !learningUnitIdentity || !topic || !professor 
         || !classType || !advisorIdentity || !adviseeIdentity || !sessionDate 
-        || !startTime || (!endTime && endTime !== undefined) || !userUpdate)
+        || !startTime || (!endTime && endTime !== undefined))
         return res.status(400).json({ message: 'Faltan campos requeridos.'});
 
     try{
@@ -86,7 +86,7 @@ export const updateAdvisorySession = async (req, res) =>{
             SessionDate: sessionDate, 
             StartTime: startTime, 
             EndTime: endTime, 
-            UserUpdate: userUpdate, 
+            UserUpdate: req.user.id, 
             UpdateAt: new Date() 
         });
         return res.status(200).json(updatedAdvisorySession);

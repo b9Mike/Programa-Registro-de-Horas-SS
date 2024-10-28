@@ -27,9 +27,9 @@ export const createAdvisee = async (req, res) => {
     if(!(req.user.Type == 1 || req.use.Type == 2) || !req.user.Active)
         return res.status(403).json({ message: "No autorizado." });
 
-    const { enrollment, gender, name, degreeIdentity, userCreation } = req.body;
+    const { enrollment, gender, name, degreeIdentity } = req.body;
     
-    if(!enrollment || !gender || !name || !degreeIdentity || !userCreation)
+    if(!enrollment || !gender || !name || !degreeIdentity)
         return res.status(400).json({ message: 'Faltan campos requeridos.'});
 
     try{
@@ -38,9 +38,9 @@ export const createAdvisee = async (req, res) => {
             Gender: gender,
             Name: name,
             DegreeIdentity: degreeIdentity,
-            UserCreation: userCreation,
+            UserCreation: req.user.id,
             CreatedAt: new Date(),
-            UserUpdate: userCreation,
+            UserUpdate: req.user.id,
             UpdateAt: new Date(),
             Active: true
         });
@@ -56,9 +56,9 @@ export const updateAdvisee = async (req, res) => {
         return res.status(403).json({ message: "No autorizado." });
 
     const { enrollment } = req.params;
-    const { gender, name, degreeIdentity, userUpdate } = req.body;
+    const { gender, name, degreeIdentity } = req.body;
 
-    if(!enrollment || !gender || !name || !degreeIdentity || !userUpdate)
+    if(!enrollment || !gender || !name || !degreeIdentity)
         return res.status(400).json({ message: 'Faltan campos requeridos.'});
 
     try{
@@ -66,7 +66,7 @@ export const updateAdvisee = async (req, res) => {
             Gender: gender, 
             Name: name, 
             DegreeIdentity: degreeIdentity, 
-            UserUpdate: userUpdate, 
+            UserUpdate: req.user.id, 
             UpdateAt: new Date() 
         });
         return res.status(200).json(updatedAdvisee);

@@ -21,8 +21,6 @@ router.post('/degree',
         body('degreeName').isString().notEmpty().withMessage('El nombre de la carrera es requerida.')
             .isLength({ min: 1, max: 255 }).withMessage('El nombre de la carrera debe tener entre 1 a 255 caracteres'),
 
-        body('userCreation').isInt().notEmpty().withMessage('La matricula del usuario creador es requerida.'),
-
     ], validateRequest, authMiddleware, createDegree);
 
 //Ruta para actualizar carrera
@@ -32,8 +30,6 @@ router.put('/degree/:id',
 
         body('degreeName').isString().notEmpty().withMessage('El nombre de la carrera es requerida.')
             .isLength({ min: 1, max: 255 }).withMessage('El nombre de la carrera debe tener entre 1 a 255 caracteres'),
-
-        body('userUpdate').isInt().notEmpty().withMessage('La matricula del usuario que actualiza es requerida.'),
 
     ], validateRequest, authMiddleware, updateDegree);
 

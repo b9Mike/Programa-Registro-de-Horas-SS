@@ -28,8 +28,6 @@ router.post('/advisee',
 
         body('degreeIdentity').isInt().notEmpty().withMessage('El id de la carrera es requerido.'),
 
-        body('userCreation').isInt().notEmpty().withMessage('La matricula del usuario creador es requerida.'),
-
     ], validateRequest, authMiddleware, createAdvisee);
 
 //Ruta para actualizar asesorado
@@ -44,8 +42,6 @@ router.put('/advisee/:enrollment',
             .isLength({ min: 5, max: 255 }).withMessage('El nombre debe tener entre 5 a 255 caracteres'),
 
         body('degreeIdentity').isInt().notEmpty().withMessage('El id de la carrera es requerido.'),
-
-        body('userUpdate').isInt().notEmpty().withMessage('La matricula del usuario que actualiza es requerida.'),
 
     ], validateRequest, authMiddleware, updateAdvisee);
 

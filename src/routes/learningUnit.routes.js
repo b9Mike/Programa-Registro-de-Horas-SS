@@ -23,8 +23,6 @@ router.post('/learningUnit',
 
         body('degreeIdentity').isInt().notEmpty().withMessage('El id de la carrera es requerido.'),
 
-        body('userCreation').isInt().notEmpty().withMessage('La matricula de usuario creador es requerido.'),
-
     ], validateRequest, authMiddleware, createLearningUnit);
 
 //Ruta para actualizar materias
@@ -36,8 +34,6 @@ router.put('/learningUnit/:id',
             .isLength({ min: 1, max: 255 }).withMessage('El nombre debe tener entre 1 a 255 caracteres'),
 
         body('degreeIdentity').isInt().notEmpty().withMessage('El id de la carrera es requerido.'),
-
-        body('userUpdate').isInt().notEmpty().withMessage('La matricula de usuario que actualiza es requerido.'),
 
     ], validateRequest, authMiddleware, updateLearningUnit);
 

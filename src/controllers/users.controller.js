@@ -46,8 +46,8 @@ export const logIn = async (req, res) => {
 
 //Register
 export const register = async (req, res) => {
-    const { enrollment, name, password, type, userCreation } = req.body;
-    if (!enrollment || !name || !password || !type || !userCreation)
+    const { enrollment, name, password, type } = req.body;
+    if (!enrollment || !name || !password || !type)
         return res.status(400).json({ message: "Faltan campos requeridos." });
 
     try {
@@ -60,8 +60,8 @@ export const register = async (req, res) => {
               Name: name,
               Password: hashedPassword, // Guardar contraseña encriptada
               Type: type,
-              UserCreation: userCreation,
-              UserUpdate: userCreation,
+              UserCreation: req.user.id,
+              UserUpdate: req.user.id,
               CreatedAt: new Date(),
               UpdatedAt: new Date(),
               Active: true // Valor por defecto
@@ -78,9 +78,9 @@ export const updateUser = async (req, res) => {
         return res.status(403).json({ message: "No autorizado." });
     
     const { enrollment } = req.params;
-    const { name, password, type, userUpdate } = req.body;
+    const { name, password, type } = req.body;
     
-    if (!enrollment || !name || !password || !type || !userUpdate)
+    if (!enrollment || !name || !password || !type)
         return res.status(400).json({ message: "Faltan campos requeridos." });
 
     try {
@@ -91,7 +91,7 @@ export const updateUser = async (req, res) => {
             Name: name,
             Password: hashedPassword, // Actualizar con contraseña encriptada
             Type: type,
-            UserUpdate: userUpdate,
+            UserUpdate: req.user.id,
             UpdatedAt: new Date(),
         });
 

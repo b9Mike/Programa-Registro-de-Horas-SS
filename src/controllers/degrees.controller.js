@@ -31,17 +31,17 @@ export const createDegree = async (req, res) => {
     if(req.user.Type != 1 || !req.user.Active)
         return res.status(403).json({ message: "No autorizado." });
 
-    const { degreeName, userCreation } = req.body;
+    const { degreeName } = req.body;
 
-    if (!degreeName || !userCreation)
+    if (!degreeName)
         return res.status(400).json({ message: 'Faltan campos requeridos.' });
 
     try {
         const degree = await degreeRepository.createDegree({
             DegreeName: degreeName,
-            UserCreation: userCreation,
+            UserCreation: req.user.id,
             CreatedAt: new Date(),
-            UserUpdate: userCreation,
+            UserUpdate: req.user.id,
             UpdateAt: new Date(),
             Active: true
         });
@@ -58,7 +58,7 @@ export const updateDegree = async (req, res) => {
         return res.status(403).json({ message: "No autorizado." });
 
     const { id } = req.params;
-    const { degreeName, userUpdate } = req.body;
+    const { degreeName } = req.body;
 
     if (!degreeName || !userUpdate || !id)
         return res.status(400).json({ message: 'Faltan campos requeridos.' });
@@ -66,7 +66,7 @@ export const updateDegree = async (req, res) => {
     try {
         const updatedDegree = await degreeRepository.updateDegree(id, {
             DegreeName: degreeName, 
-            UserUpdate: userUpdate,
+            UserUpdate: req.user.id,
             UpdateAt: new Date() 
         });
         return res.status(200).json(updatedDegree);
