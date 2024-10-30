@@ -24,9 +24,12 @@ export const getAdvisorByEnrollment = async (req, res) => {
 }
 
 export const createAdvisor = async (req, res) => {
+    if(req.user.Type != 1 || !req.user.Active)
+        return res.status(403).json({ message: "No autorizado." });
+
     const {enrollment, gender, name, degreeIdentity, userCreation } = req.body;
     
-    if(!enrollment || !gender || !name || !degreeIdentity || !userCreation)
+    if(!enrollment || !gender || !name || !degreeIdentity)
         return res.status(400).json({ message: 'Faltan campos requeridos.'});
 
     try{
@@ -35,9 +38,9 @@ export const createAdvisor = async (req, res) => {
             Gender: gender,
             Name: name,
             DegreeIdentity: degreeIdentity,
-            UserCreation: userCreation,
+            UserCreation: req.user.id,
             CreatedAt: new Date(),
-            UserUpdate: userCreation,
+            UserUpdate: req.user.id,
             UpdateAt: new Date(),
             Active: true
         });
@@ -49,10 +52,13 @@ export const createAdvisor = async (req, res) => {
 }
 
 export const updateAdvisor = async (req, res) => {
+    if(req.user.Type != 1 || !req.user.Active)
+        return res.status(403).json({ message: "No autorizado." });
+
     const { enrollment } = req.params;
     const { gender, name, degreeIdentity, userUpdate } = req.body;
 
-    if(!enrollment || !gender || !name || !degreeIdentity || !userUpdate)
+    if(!enrollment || !gender || !name || !degreeIdentity)
         return res.status(400).json({ message: 'Faltan campos requeridos.'});
 
     try{
@@ -60,7 +66,7 @@ export const updateAdvisor = async (req, res) => {
             Gender: gender,
             Name: name, 
             DegreeIdentity: degreeIdentity, 
-            UserUpdate: userUpdate, 
+            UserUpdate: req.user.id, 
             UpdateAt: new Date() 
         });
         return res.status(200).json(updatedAdvisor);
@@ -70,6 +76,9 @@ export const updateAdvisor = async (req, res) => {
 }
 
 export const toggleAdvisorActivation = async (req, res) => {
+    if(req.user.Type != 1 || !req.user.Active)
+        return res.status(403).json({ message: "No autorizado." });
+
     const { enrollment } = req.params;
 
     if(!enrollment)

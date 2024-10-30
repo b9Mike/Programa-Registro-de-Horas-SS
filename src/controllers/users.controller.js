@@ -5,6 +5,9 @@ import { encryptPassword, comparePassword, generateToken } from "../services/aut
 
 //Obtener todos los usuarios
 export const getAllUsers = async (req, res) => {
+    if(req.user.Type != 1 || !req.user.Active)
+        return res.status(403).json({ message: "No autorizado." });
+
     try {
         const users = await userRepository.getAllUsers();
         res.status(200).json(users);
@@ -35,10 +38,7 @@ export const logIn = async (req, res) => {
 
         // Generar JWT
         const token = generateToken(user.Enrollment);
-        /*
-        const user = await userRepository.getUserByEnrollment(enrollment, password);
-        */
-        res.status(200).json(token);
+        res.status(200).header('Authorization', `Bearer ${token}`).json({ message: 'Inicio de sesión exitoso' });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -46,8 +46,8 @@ export const logIn = async (req, res) => {
 
 //Register
 export const register = async (req, res) => {
-    const { enrollment, name, password, type, userCreation } = req.body;
-    if (!enrollment || !name || !password || !type || !userCreation)
+    const { enrollment, name, password, type } = req.body;
+    if (!enrollment || !name || !password || !type)
         return res.status(400).json({ message: "Faltan campos requeridos." });
 
     try {
@@ -60,27 +60,12 @@ export const register = async (req, res) => {
               Name: name,
               Password: hashedPassword, // Guardar contraseña encriptada
               Type: type,
-              UserCreation: userCreation,
-              UserUpdate: userCreation,
+              UserCreation: req.user.id,
+              UserUpdate: req.user.id,
               CreatedAt: new Date(),
               UpdatedAt: new Date(),
               Active: true // Valor por defecto
           });
-
-        /*
-        const user = await userRepository.createUser({
-            Enrollment: enrollment,
-            Name: name,
-            Password: password,
-            Type: type,
-            UserCreation: userCreation,
-            UserUpdate: userCreation,
-            CreatedAt: new Date(),
-            UpdatedAt: new Date(),
-            Active: true // Valor por defecto
-        });
-        */
-
         res.status(200).json(user);
     } catch (error) {
         return res.status(500).json({ message: error.message });
@@ -89,9 +74,13 @@ export const register = async (req, res) => {
 
 //Actualizar usuario
 export const updateUser = async (req, res) => {
+    if(req.user.Type != 1 || !req.user.Active)
+        return res.status(403).json({ message: "No autorizado." });
+    
     const { enrollment } = req.params;
-    const { name, password, type, userUpdate } = req.body;
-    if (!enrollment || !name || !password || !type || !userUpdate)
+    const { name, password, type } = req.body;
+    
+    if (!enrollment || !name || !password || !type)
         return res.status(400).json({ message: "Faltan campos requeridos." });
 
     try {
@@ -102,18 +91,10 @@ export const updateUser = async (req, res) => {
             Name: name,
             Password: hashedPassword, // Actualizar con contraseña encriptada
             Type: type,
-            UserUpdate: userUpdate,
+            UserUpdate: req.user.id,
             UpdatedAt: new Date(),
         });
-        /*
-        const user = await userRepository.updateUser(enrollment, {
-            Name: name,
-            Password: password,
-            Type: type,
-            UserUpdate: userUpdate,
-            UpdatedAt: new Date(),
-        });
-        */
+
         res.status(200).json(user);
     } catch (error) {
         return res.status(500).json({ message: error.message });
@@ -122,6 +103,9 @@ export const updateUser = async (req, res) => {
 
 //Cambiar estado del usuario
 export const toggleUserActivation = async (req, res) => {
+    if(req.user.Type != 1  || !req.user.Active)
+        return res.status(403).json({ message: "No autorizado." });
+
     const { enrollment } = req.params;
 
     try {

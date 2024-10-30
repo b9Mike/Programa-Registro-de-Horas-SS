@@ -24,9 +24,12 @@ export const getAdviseById = async (req, res) => {
 }
 
 export const createAdvisee = async (req, res) => {
-    const { enrollment, gender, name, degreeIdentity, userCreation } = req.body;
+    if(!(req.user.Type == 1 || req.use.Type == 2) || !req.user.Active)
+        return res.status(403).json({ message: "No autorizado." });
+
+    const { enrollment, gender, name, degreeIdentity } = req.body;
     
-    if(!enrollment || !gender || !name || !degreeIdentity || !userCreation)
+    if(!enrollment || !gender || !name || !degreeIdentity)
         return res.status(400).json({ message: 'Faltan campos requeridos.'});
 
     try{
@@ -35,9 +38,9 @@ export const createAdvisee = async (req, res) => {
             Gender: gender,
             Name: name,
             DegreeIdentity: degreeIdentity,
-            UserCreation: userCreation,
+            UserCreation: req.user.id,
             CreatedAt: new Date(),
-            UserUpdate: userCreation,
+            UserUpdate: req.user.id,
             UpdateAt: new Date(),
             Active: true
         });
@@ -49,10 +52,13 @@ export const createAdvisee = async (req, res) => {
 }
 
 export const updateAdvisee = async (req, res) => {
-    const { enrollment } = req.params;
-    const { gender, name, degreeIdentity, userUpdate } = req.body;
+    if(!(req.user.Type == 1 || req.use.Type == 2) || !req.user.Active)
+        return res.status(403).json({ message: "No autorizado." });
 
-    if(!enrollment || !gender || !name || !degreeIdentity || !userUpdate)
+    const { enrollment } = req.params;
+    const { gender, name, degreeIdentity } = req.body;
+
+    if(!enrollment || !gender || !name || !degreeIdentity)
         return res.status(400).json({ message: 'Faltan campos requeridos.'});
 
     try{
@@ -60,7 +66,7 @@ export const updateAdvisee = async (req, res) => {
             Gender: gender, 
             Name: name, 
             DegreeIdentity: degreeIdentity, 
-            UserUpdate: userUpdate, 
+            UserUpdate: req.user.id, 
             UpdateAt: new Date() 
         });
         return res.status(200).json(updatedAdvisee);
@@ -70,6 +76,9 @@ export const updateAdvisee = async (req, res) => {
 }
 
 export const toggleAdviseeActivation = async (req, res) => {
+    if(!(req.user.Type == 1 || req.use.Type == 2) || !req.user.Active)
+        return res.status(403).json({ message: "No autorizado." });
+
     const { enrollment } = req.params;
 
     if(!enrollment)
