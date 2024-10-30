@@ -3,7 +3,15 @@ import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
 
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+// Obtener __filename y __dirname en ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 dotenv.config();
+
+//pa que jale bien el dir name
 
 const auth = new google.auth.GoogleAuth({
     keyFile: path.join(__dirname, '../../config/google-service-account.json'), // Las credenciales las pondremos en la carpeta raiz config
