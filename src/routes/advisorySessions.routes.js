@@ -84,4 +84,11 @@ router.get('/advisorySessions/advisor/:enrollment',
         param('enrollment').isInt().withMessage('El id debe ser un numero entero'),
     ], validateRequest, getAdvisorySessionsByAdvisor);
 
+//ruta para obtener reporte de asesoria por carrera mediante la materia
+
+    router.get('/advisorySessions/degrees/:identity', 
+        [
+            param('identity').isInt().withMessage('El id debe ser un numero entero'),
+        ], validateRequest, getAdvisorySessionsByAdvisor);
+
 export default router

@@ -119,3 +119,20 @@ export const getAdvisorySessionsByAdvisor = async (req, res) => {
         return res.status(500).json({ message: 'Error al obtener las asesorías del asesor', error: error.message });
     }
 };
+
+
+export const getAdvisorySessionsByDegree = async (req, res) => {
+    const { identity } = req.params;
+
+    try {
+        const advisories = await advisorySessionRepository.getAdvisorySessionsByDegreeUsingUnit(identity);
+
+        if (!advisories || advisories.length === 0) {
+            return res.status(404).json({ message: 'No se encontraron asesorías para este asesor.' });
+        }
+
+        return res.json(advisories);
+    } catch (error) {
+        return res.status(500).json({ message: 'Error al obtener las asesorías del asesor', error: error.message });
+    }
+};

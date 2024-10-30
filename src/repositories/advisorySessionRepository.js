@@ -164,5 +164,30 @@ export const advisorySessionRepository = {
         } catch (error) {
             throw new Error('Error al obtener las asesorías: ' + error.message);
         }
+    },
+
+    //reporte por carera mediante id de materia
+
+    getAdvisorySessionsByDegreeUsingUnit: async (identity) => {
+        try {
+            const advisories = await AdvisorySession.findAll({
+                include: [{
+                    model: LearningUnit,  // Relación con LearningUnit
+                    where: { DegreeIdentity: identity },  // Filtrar por el ID de la carrera (DegreeIdentity)
+                    attributes: ['Name'],  // Campos de LearningUnit
+                    include: [{
+                        model: Degree,  // Relación con Degree desde LearningUnit
+                        attributes: ['DegreeName']  // Campo que necesitas de Degree
+                    }]
+                }]
+                // Aquí no especificamos 'attributes' para obtener todos los campos de AdvisorySession
+            });
+    
+            return advisories;
+        } catch (error) {
+            throw new Error('Error al obtener las asesorías: ' + error.message);
+        }
     }
+    
+    
 };
