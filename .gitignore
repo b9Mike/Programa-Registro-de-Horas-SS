@@ -128,3 +128,6 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# credentials
+config/departamento-asesorias-02a726e2e629.json
