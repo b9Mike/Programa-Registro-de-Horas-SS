@@ -13,6 +13,10 @@ export const Degree = sequelize.define('Degrees', {
         type: DataTypes.STRING(255),
         allowNull: false,
     },
+    ShortName: {
+        type: DataTypes.STRING(255),
+        allowNull: false,
+    },
     UserCreation: {
         type: DataTypes.INTEGER,
         allowNull: false
