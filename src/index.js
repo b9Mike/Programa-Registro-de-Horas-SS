@@ -4,17 +4,34 @@ dotenv.config();
 import app from './app.js';
 import {sequelize} from './database/database.js';
 
-import {} from './models/Advisee.js';
-import {} from './models/Advisor.js';
-import {} from './models/AdvisorySession.js';
+import { Advisee } from './models/Advisee.js';
+import { Advisor } from './models/Advisor.js';
+import { AdvisorySession } from './models/AdvisorySession.js';
 import { Degree } from './models/Degrees.js';
-import {} from './models/LearningUnit.js';
+import { LearningUnit } from './models/LearningUnit.js';
 import { User } from './models/User.js';
 import {seedDemoUsers} from './seeders/users.seeder.js';
 import {seedDemoDegrees} from './seeders/degrees.seeder.js';
 
 
 const PORT = process.env.DB_PORT || 3000;
+
+// Definir modelos
+const models = {
+  Degree,
+  User,
+  LearningUnit,
+  AdvisorySession,
+  Advisor,
+  Advisee
+};
+
+// Establecer las asociaciones
+Object.keys(models).forEach(modelName => {
+  if (models[modelName].associate) {
+    models[modelName].associate(models); // Llamar a associate() de cada modelo
+  }
+});
 
 async function runSeeders() {
   try {

@@ -1,4 +1,5 @@
 // Repository de la carrera
+import { DegreeMapper } from "../mappers/degreeMapper.js";
 import { Degree } from "../models/Degrees.js";
 
 //funciones para interactuar con la tabla carreras
@@ -7,7 +8,9 @@ export const degreeRepository = {
     // Obtener todas las carreras (degrees)
     getAllDegrees: async () => {
         try {
-            const degrees = await Degree.findAll();
+            const degrees = await Degree.findAll({
+                attributes: ['Identity', 'DegreeName', 'ShortName', 'Active'],
+            });
             return degrees;
         } catch (error) {
             throw new Error('Error al obtener las carreras: ' + error.message);
@@ -18,6 +21,7 @@ export const degreeRepository = {
     getDegreeById: async (id) => {
         try {
             const degree = await Degree.findOne({
+                attributes: ['Identity', 'DegreeName', 'ShortName', 'Active'],
                 where: { Identity: id }
             });
             return degree;
@@ -67,13 +71,43 @@ export const degreeRepository = {
                 Active: newStatus,
                 UpdateAt: new Date(),
             });
-    
+            
+            const degreeResponseDTO = DegreeMapper.toResponseDTO(degree);
+
             return {
                 message: newStatus ? 'Carrera activada exitosamente' : 'Carrera desactivada exitosamente',
-                degree,
+                degreeResponseDTO,
             };
         } catch (error) {
             throw new Error('Error al actualizar el estado de la carrera: ' + error.message);
         }
+    },
+
+    //Conseguir el Id de la carrera buscando con su abreviatura
+    getDegreeIdByShortName: async (shortName) =>{
+        try {
+            const degree = await Degree.findOne({
+                attributes: ['Identity', 'DegreeName', 'ShortName', 'Active'],
+                where: { ShortName: shortName }
+            });
+            return degree.Identity;
+        } catch (error) {
+            throw new Error('Error al obtener la carrera: ' + error.message);
+        }
+    },
+
+    //Conseguir la abreviatura de la carrera buscando con su id
+    getDegreeShortNameById: async (identity) =>{
+        try {
+            const degree = await Degree.findOne({
+                attributes: ['Identity', 'DegreeName', 'ShortName', 'Active'],
+                where: { Identity: identity }
+            });
+            return degree.ShortName;
+        } catch (error) {
+            throw new Error('Error al obtener la carrera: ' + error.message);
+        }
     }
+
+
 };

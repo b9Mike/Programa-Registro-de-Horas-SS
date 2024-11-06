@@ -1,3 +1,4 @@
+import { LearningUnitMapper } from "../mappers/learningUnitMapper.js";
 import { learningUnitRepository } from "../repositories/learningUnitRepository.js";
 
 //Obtener Materias
@@ -30,23 +31,11 @@ export const createLearningUnit = async (req, res) => {
     if(req.user.Type != 1  || !req.user.Active)
         return res.status(403).json({ message: "No autorizado." });
 
-    const { name, degreeIdentity } = req.body;
-
-    if (!name || !degreeIdentity)
-        return res.status(400).json({ message: "Faltan campos requeridos." });
-
     try {
-        const learningUnit = await learningUnitRepository.createLearningUnit({
-            Name: name,
-            DegreeIdentity: degreeIdentity,
-            UserCreation: req.user.id,
-            CreatedAt: new Date(),
-            UserUpdate: req.user.id,
-            UpdateAt: new Date(),
-            Active: true,
-        });
-
-        return res.status(200).json(learningUnit);
+        const learningUnitCreateDTO = LearningUnitMapper.toCreateDTO(req.body, req.user.id);
+        const learningUnit = await learningUnitRepository.createLearningUnit(learningUnitCreateDTO);
+        const learningUnitResponseDTO = LearningUnitMapper.toResponseDTO(learningUnit);
+        return res.status(200).json(learningUnitResponseDTO);
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -57,20 +46,12 @@ export const updateLearningUnit = async (req, res) => {
     if(req.user.Type != 1  || !req.user.Active)
         return res.status(403).json({ message: "No autorizado." });
 
-    const { id } = req.params;
-    const { name, degreeIdentity } = req.body;
-
-    if (!name || !degreeIdentity || !id)
-        return res.status(400).json({ message: "Faltan campos requeridos." });
-
     try {
-        const updatedLearningUnit = await learningUnitRepository.updateLearningUnit(id,{
-                Name: name,
-                DegreeIdentity: degreeIdentity,
-                UserUpdate: req.user.id,
-                UpdateAt: new Date(),
-            });
-        return res.status(200).json(updatedLearningUnit);
+        const learningUnitUpdateDTO = LearningUnitMapper.toUpdateDTO(req.params, req.body, req.user.id);
+        const updatedLearningUnit = await learningUnitRepository.updateLearningUnit(learningUnitUpdateDTO.Identity, learningUnitUpdateDTO);
+
+        const learningUnitResponseDTO = LearningUnitMapper.toResponseDTO(updatedLearningUnit);
+        return res.status(200).json(learningUnitResponseDTO);
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }

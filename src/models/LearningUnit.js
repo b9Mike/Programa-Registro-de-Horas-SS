@@ -52,6 +52,7 @@ export const LearningUnit = sequelize.define('LearningUnits', {
 LearningUnit.associate = (models) => {
     LearningUnit.belongsTo(models.Degree, {
         foreignKey: 'DegreeIdentity',
-        tagetKey: 'Identity',
+        targetKey: 'Identity',
+        as: 'degree',
     });
 };

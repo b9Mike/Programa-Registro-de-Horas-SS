@@ -1,3 +1,4 @@
+import { UserMapper } from "../mappers/userMapper.js";
 import { User } from "../models/User.js";
 //import bcrypt from 'bcrypt';  // Para comparar la contraseña encriptada
 
@@ -7,7 +8,9 @@ export const userRepository = {
     // Obtener todos los usuarios
     getAllUsers: async () => {
         try {
-            const users = await User.findAll();
+            const users = await User.findAll({
+                attributes:['Enrollment', 'Name', 'Type', 'Active'],
+            });
             return users;
         } catch (error) {
             throw new Error('Error al obtener usuarios: ' + error.message);
@@ -19,6 +22,7 @@ export const userRepository = {
         try {
             // Buscamos al usuario por la matrícula y la contraseña
             const user = await User.findOne({
+                attributes:['Enrollment', 'Name', 'Type', 'Password', 'Active'],
                 where: {
                     Enrollment: enrollment,
                 },
@@ -82,11 +86,14 @@ export const userRepository = {
                 Active: newStatus,
                 UpdateAt: new Date() // Actualizar el campo UpdateAt con la fecha actual
             });
+
+            //Regresar el usuario con el DTO de respuesta
+            const userResponseDTO = UserMapper.toResponseDTO(user);
     
             // Devolver un mensaje indicando el nuevo estado del usuario
             return {
                 message: newStatus ? 'Usuario activado exitosamente' : 'Usuario desactivado exitosamente',
-                user
+                userResponseDTO
             };
             
         } catch (error) {

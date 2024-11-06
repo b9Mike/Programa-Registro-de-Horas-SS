@@ -1,6 +1,11 @@
 //Repository de sesion de asesorias
+import { SessionMapper } from "../mappers/advisorySessionMapper.js";
 import { AdvisorySession } from "../models/AdvisorySession.js";
 import { Op } from "sequelize";
+import { LearningUnit } from "../models/LearningUnit.js";
+import { Advisor } from "../models/Advisor.js";
+import { Advisee  } from "../models/Advisee.js";
+
 
 //Funciones para interactuar con la tabla de sesion de asesorias
 export const advisorySessionRepository = {
@@ -90,6 +95,22 @@ export const advisorySessionRepository = {
 
             //Lista con todas las asesorias en el rango
             const sessions = await AdvisorySession.findAll({
+                attributes: ['Identity', 'Topic', 'Professor', 'ClassType' , 'Active'],
+                include: [{
+                    model: LearningUnit,
+                    as: 'learningUnit',
+                    attributes: ['Identity', 'Name'],
+                },
+                {
+                    model: Advisor,
+                    as: 'advisor',
+                    attributes: ['Enrollment', 'Name'],
+                },
+                {
+                    model: Advisee,
+                    as: 'advisee',
+                    attributes: ['Enrollment', 'Name'],
+                }],
                 where: whereClause,
             });
 
@@ -103,6 +124,22 @@ export const advisorySessionRepository = {
     getAdvisorySessionById: async (sessionId) => {
         try {
             const session = await AdvisorySession.findOne({
+                attributes: ['Identity', 'Topic', 'Professor', 'ClassType' , 'Active'],
+                include: [{
+                    model: LearningUnit,
+                    as: 'learningUnit',
+                    attributes: ['Identity', 'Name'],
+                },
+                {
+                    model: Advisor,
+                    as: 'advisor',
+                    attributes: ['Enrollment', 'Name'],
+                },
+                {
+                    model: Advisee,
+                    as: 'advisee',
+                    attributes: ['Enrollment', 'Name'],
+                }],
                 where: { Identity: sessionId }
             });
             return session;
@@ -147,10 +184,12 @@ export const advisorySessionRepository = {
                 Active: newStatus,
                 UpdateAt: new Date(),
             });
-    
+            
+            const sessionResponseDTO = SessionMapper.toResponseDTO(advisorySession);
+
             return {
                 message: newStatus ? 'Sesión de asesoría activada exitosamente' : 'Sesión de asesoría desactivada exitosamente',
-                advisorySession,
+                sessionResponseDTO,
             };
         } catch (error) {
             throw new Error('Error al actualizar el estado de la sesión de asesoría: ' + error.message);
@@ -161,6 +200,22 @@ export const advisorySessionRepository = {
         try {
             // Consulta para obtener las sesiones de asesoría del asesor con su enrollment
             const advisories = await AdvisorySession.findAll({
+                attributes: ['Identity', 'Topic', 'Professor', 'ClassType' , 'Active'],
+                include: [{
+                    model: LearningUnit,
+                    as: 'learningUnit',
+                    attributes: ['Identity', 'Name'],
+                },
+                {
+                    model: Advisor,
+                    as: 'advisor',
+                    attributes: ['Enrollment', 'Name'],
+                },
+                {
+                    model: Advisee,
+                    as: 'advisee',
+                    attributes: ['Enrollment', 'Name'],
+                }],
                 where: { AdvisorIdentity: enrollment },
             });
 
@@ -171,20 +226,26 @@ export const advisorySessionRepository = {
     },
 
     //reporte por carera mediante id de materia
-
     getAdvisorySessionsByDegreeUsingUnit: async (identity) => {
         try {
             const advisories = await AdvisorySession.findAll({
+                attributes: ['Identity', 'Topic', 'Professor', 'ClassType' , 'Active'],
                 include: [{
                     model: LearningUnit,  // Relación con LearningUnit
+                    as: 'learningUnit',
                     where: { DegreeIdentity: identity },  // Filtrar por el ID de la carrera (DegreeIdentity)
                     attributes: ['Name'],  // Campos de LearningUnit
-                    include: [{
-                        model: Degree,  // Relación con Degree desde LearningUnit
-                        attributes: ['DegreeName']  // Campo que necesitas de Degree
-                    }]
+                },
+                {
+                    model: Advisor,
+                    as: 'advisor',
+                    attributes: ['Enrollment', 'Name'],
+                },
+                {
+                    model: Advisee,
+                    as: 'advisee',
+                    attributes: ['Enrollment', 'Name'],
                 }]
-                // Aquí no especificamos 'attributes' para obtener todos los campos de AdvisorySession
             });
     
             return advisories;
@@ -192,6 +253,5 @@ export const advisorySessionRepository = {
             throw new Error('Error al obtener las asesorías: ' + error.message);
         }
     }
-    
     
 };

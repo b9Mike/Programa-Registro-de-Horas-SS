@@ -1,3 +1,4 @@
+import { SessionMapper } from '../mappers/advisorySessionMapper.js';
 import { advisorySessionRepository } from '../repositories/advisorySessionRepository.js';
 import { getDateRange } from '../services/advisorySession.service.js';
 
@@ -30,32 +31,11 @@ export const createAdvisorySession = async (req, res) => {
     if(!(req.user.Type == 1 || req.use.Type == 2) || !req.user.Active)
         return res.status(403).json({ message: "No autorizado." });
 
-    const { learningUnitIdentity, topic, professor, classType, 
-        advisorIdentity, adviseeIdentity, sessionDate, startTime } = req.body;
-    
-    if(!learningUnitIdentity || !topic || !professor || !classType 
-        || !advisorIdentity || !adviseeIdentity || !sessionDate || !startTime)
-        return res.status(400).json({ message: 'Faltan campos requeridos.'});
-
     try{
-        const advisorySession = await advisorySessionRepository.createAdvisorySession({
-            LearningUnitIdentity: learningUnitIdentity,
-            Topic: topic,
-            Professor: professor,
-            ClassType: classType,
-            AdvisorIdentity: advisorIdentity,
-            AdviseeIdentity: adviseeIdentity,
-            SessionDate: sessionDate,
-            StartTime: startTime,
-            EndTime: null,
-            UserCreation: req.user.id,
-            CreatedAt: new Date(),
-            UserUpdate: req.user.id,
-            UpdateAt: new Date(),
-            Active: true
-        });
-
-        return res.status(200).json(advisorySession);
+        const sessionCreateDTO = SessionMapper.toCreateDTO(req.body, req.user.id);
+        const advisorySession = await advisorySessionRepository.createAdvisorySession(sessionCreateDTO);
+        const sessionResponseDTO = SessionMapper.toResponseDTO(advisorySession);
+        return res.status(200).json(sessionResponseDTO);
     } catch (error){
         return res.status(500).json({message: error.message});
     }
@@ -65,31 +45,11 @@ export const updateAdvisorySession = async (req, res) =>{
     if(!(req.user.Type == 1 || req.use.Type == 2) || !req.user.Active)
         return res.status(403).json({ message: "No autorizado." });
 
-    const { sessionId } = req.params;
-    const { learningUnitIdentity, topic, professor, classType, 
-        advisorIdentity, adviseeIdentity, sessionDate, startTime, 
-        endTime } = req.body;
-    
-    if(!sessionId || !learningUnitIdentity || !topic || !professor 
-        || !classType || !advisorIdentity || !adviseeIdentity || !sessionDate 
-        || !startTime || (!endTime && endTime !== undefined))
-        return res.status(400).json({ message: 'Faltan campos requeridos.'});
-
     try{
-        const updatedAdvisorySession = await advisorySessionRepository.updateAdvisorySession(sessionId,  {
-            LearningUnitIdentity: learningUnitIdentity,
-            Topic: topic, 
-            Professor: professor, 
-            ClassType: classType, 
-            AdvisorIdentity: advisorIdentity, 
-            AdviseeIdentity: adviseeIdentity, 
-            SessionDate: sessionDate, 
-            StartTime: startTime, 
-            EndTime: endTime, 
-            UserUpdate: req.user.id, 
-            UpdateAt: new Date() 
-        });
-        return res.status(200).json(updatedAdvisorySession);
+        const sessionUpdateDTO = SessionMapper.toUpdateDTO(req.params, req.body, req.user.id);
+        const updatedAdvisorySession = await advisorySessionRepository.updateAdvisorySession(sessionUpdateDTO.Identity, sessionUpdateDTO);
+        const sessionResponseDTO = SessionMapper.toResponseDTO(updatedAdvisorySession);
+        return res.status(200).json(sessionResponseDTO);
     } catch (error){
         return res.status(500).json({message: error.message});
     }
@@ -118,11 +78,9 @@ export const getAdvisorySessionsByAdvisor = async (req, res) => {
 
     try {
         const advisories = await advisorySessionRepository.getAdvisorySessionsByAdvisor(enrollment);
-
         if (!advisories || advisories.length === 0) {
             return res.status(404).json({ message: 'No se encontraron asesorías para este asesor.' });
         }
-
         return res.json(advisories);
     } catch (error) {
         return res.status(500).json({ message: 'Error al obtener las asesorías del asesor', error: error.message });
@@ -137,11 +95,10 @@ export const getAdvisorySessionsByDegree = async (req, res) => {
         const advisories = await advisorySessionRepository.getAdvisorySessionsByDegreeUsingUnit(identity);
 
         if (!advisories || advisories.length === 0) {
-            return res.status(404).json({ message: 'No se encontraron asesorías para este asesor.' });
+            return res.status(404).json({ message: 'No se encontraron asesorías para esta carrera.' });
         }
-
         return res.json(advisories);
     } catch (error) {
-        return res.status(500).json({ message: 'Error al obtener las asesorías del asesor', error: error.message });
+        return res.status(500).json({ message: 'Error al obtener las asesorías de la carrera', error: error.message });
     }
 };

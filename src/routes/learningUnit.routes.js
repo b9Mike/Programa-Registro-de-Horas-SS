@@ -21,7 +21,7 @@ router.post('/learningUnit',
         body('name').isString().notEmpty().withMessage('El nombre es requerido.')
             .isLength({ min: 1, max: 255 }).withMessage('El nombre debe tener entre 1 a 255 caracteres'),
 
-        body('degreeIdentity').isInt().notEmpty().withMessage('El id de la carrera es requerido.'),
+        body('degreeIdentity').isInt().notEmpty().withMessage('El id de la carrera es requerida.')
 
     ], validateRequest, authMiddleware, createLearningUnit);
 
@@ -33,7 +33,7 @@ router.put('/learningUnit/:id',
         body('name').isString().notEmpty().withMessage('El nombre es requerido.')
             .isLength({ min: 1, max: 255 }).withMessage('El nombre debe tener entre 1 a 255 caracteres'),
 
-        body('degreeIdentity').isInt().notEmpty().withMessage('El id de la carrera es requerido.'),
+        body('degreeIdentity').isInt().notEmpty().withMessage('El id de la carrera es requerida.')
 
     ], validateRequest, authMiddleware, updateLearningUnit);
 

@@ -1,5 +1,7 @@
 //Repository de Asesores
+import { StudentMapper } from "../mappers/studentMapper.js";
 import { Advisor } from "../models/Advisor.js";
+import { Degree } from "../models/Degrees.js";
 
 //Funciones para interactuar con la tabla de Asesores
 export const advisorRepository = {
@@ -17,7 +19,14 @@ export const advisorRepository = {
     // Obtener todos los asesores
     getAllAdvisors: async () => {
         try {
-            const advisors = await Advisor.findAll();
+            const advisors = await Advisor.findAll({
+                attributes:['Enrollment', 'Gender', 'Name', 'Active'],
+                include: [{
+                    model: Degree,
+                    as: 'degree',
+                    attributes: ['Identity', 'ShortName'],
+                }]
+            });
             return advisors;
         } catch (error) {
             throw new Error('Error al obtener los asesores: ' + error.message);
@@ -28,6 +37,12 @@ export const advisorRepository = {
     getAdvisorByEnrollment: async (enrollment) => {
         try {
             const advisor = await Advisor.findOne({
+                attributes:['Enrollment', 'Gender', 'Name', 'Active'],
+                include: [{
+                    model: Degree,
+                    as: 'degree',
+                    attributes: ['Identity', 'ShortName'],
+                }],
                 where: { Enrollment: enrollment }
             });
             return advisor;
@@ -69,10 +84,13 @@ export const advisorRepository = {
                 Active: newStatus,
                 UpdateAt: new Date(),
             });
-    
+            
+            //Regresar el asesor con el DTO de respuesta
+            const advisorResponseDTO = StudentMapper.toResponseDTO(advisor);
+
             return {
                 message: newStatus ? 'Asesor activado exitosamente' : 'Asesor desactivado exitosamente',
-                advisor,
+                advisorResponseDTO,
             };
         } catch (error) {
             throw new Error('Error al actualizar el estado del asesor: ' + error.message);

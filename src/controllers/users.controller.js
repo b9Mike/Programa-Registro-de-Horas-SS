@@ -1,3 +1,4 @@
+import { UserMapper } from "../mappers/userMapper.js";
 import { userRepository } from "../repositories/usersRepository.js";
 
 import { encryptPassword, comparePassword, generateToken } from "../services/auth.service.js";
@@ -19,19 +20,16 @@ export const getAllUsers = async (req, res) => {
 
 //Log In
 export const logIn = async (req, res) => {
-    const { enrollment, password } = req.body;
-    if (!enrollment || !password)
-        return res.status(400).json({ message: "Faltan campos requeridos." });
-
     try {
+        const userLoginDTO = UserMapper.toLoginDTO(req.body);
 
-        const user = await userRepository.getUserByEnrollment(enrollment);
+        const user = await userRepository.getUserByEnrollment(userLoginDTO.Enrollment);
         if (!user) {
             return res.status(404).json({ message: "Usuario no encontrado." });
         }
 
         // Validar la contraseña
-        const isMatch = await comparePassword(password, user.Password);
+        const isMatch = await comparePassword(userLoginDTO.Password, user.Password);
         if (!isMatch) {
             return res.status(400).json({ message: "Contraseña incorrecta." });
         }
@@ -46,27 +44,18 @@ export const logIn = async (req, res) => {
 
 //Register
 export const register = async (req, res) => {
-    const { enrollment, name, password, type } = req.body;
-    if (!enrollment || !name || !password || !type)
-        return res.status(400).json({ message: "Faltan campos requeridos." });
-
     try {
-
-          // Encriptar la contraseña
-          const hashedPassword = await encryptPassword(password);
-
-          const user = await userRepository.createUser({
-              Enrollment: enrollment,
-              Name: name,
-              Password: hashedPassword, // Guardar contraseña encriptada
-              Type: type,
-              UserCreation: req.user.id,
-              UserUpdate: req.user.id,
-              CreatedAt: new Date(),
-              UpdatedAt: new Date(),
-              Active: true // Valor por defecto
-          });
-        res.status(200).json(user);
+        //Convertir el body en un usuario de registroDTO para guardarlo
+        const userRegisterDTO = UserMapper.toRegisterDTO(req.body, req.user.id);
+        // Encriptar la contraseña
+        const hashedPassword = await encryptPassword(userRegisterDTO.Password);
+        userRegisterDTO.Password = hashedPassword;
+        
+        const user = await userRepository.createUser(userRegisterDTO);
+        
+        //Convertis los usuarios en los DTOs de respuesta para mostrarlos
+        const userResponseDTO = UserMapper.toResponseDTO(user);
+        res.status(200).json(userResponseDTO);
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -77,25 +66,16 @@ export const updateUser = async (req, res) => {
     if(req.user.Type != 1 || !req.user.Active)
         return res.status(403).json({ message: "No autorizado." });
     
-    const { enrollment } = req.params;
-    const { name, password, type } = req.body;
-    
-    if (!enrollment || !name || !password || !type)
-        return res.status(400).json({ message: "Faltan campos requeridos." });
-
     try {
+        const userUpdateDTO = UserMapper.toUpdateDTO(req.params, req.body, req.user.id);
         // Encriptar la nueva contraseña si se actualiza
-        const hashedPassword = await encryptPassword(password);
+        const hashedPassword = await encryptPassword(userUpdateDTO.Password);
+        userUpdateDTO.Password = hashedPassword;
 
-        const user = await userRepository.updateUser(enrollment, {
-            Name: name,
-            Password: hashedPassword, // Actualizar con contraseña encriptada
-            Type: type,
-            UserUpdate: req.user.id,
-            UpdatedAt: new Date(),
-        });
+        const user = await userRepository.updateUser(userUpdateDTO.Enrollment, userUpdateDTO);
+        const userResponseDTO = UserMapper.toResponseDTO(user);
 
-        res.status(200).json(user);
+        res.status(200).json(userResponseDTO);
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }

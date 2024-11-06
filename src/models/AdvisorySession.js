@@ -93,13 +93,16 @@ AdvisorySession.associate = (models) => {
     AdvisorySession.belongsTo(models.LearningUnit, {
         foreignKey: 'LearningUnitIdentity',
         targetKey: 'Identity',
+        as: 'learningUnit'
     });
     AdvisorySession.belongsTo(models.Advisor, {
         foreignKey: 'AdvisorIdentity',
         targetKey: 'Enrollment',
+        as: 'advisor'
     });
     AdvisorySession.belongsTo(models.Advisee, {
         foreignKey: 'AdviseeIdentity',
         targetKey: 'Enrollment',
+        as: 'advisee'
     });
 };

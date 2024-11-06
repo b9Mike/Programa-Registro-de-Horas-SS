@@ -1,3 +1,4 @@
+import { DegreeMapper } from "../mappers/degreeMapper.js";
 import { degreeRepository } from "../repositories/degreeRepository.js";
 
 //Obtener carreras
@@ -17,7 +18,6 @@ export const getDegreeById = async (req, res) => {
     if (!id)
         return res.status(400).json({ message: 'Faltan campos requeridos.' });
 
-
     try {
         const degree = await degreeRepository.getDegreeById(id);
         res.status(200).json(degree);
@@ -31,23 +31,11 @@ export const createDegree = async (req, res) => {
     if(req.user.Type != 1 || !req.user.Active)
         return res.status(403).json({ message: "No autorizado." });
 
-    const { degreeName, shortName } = req.body;
-
-    if (!degreeName || !shortName)
-        return res.status(400).json({ message: 'Faltan campos requeridos.' });
-
     try {
-        const degree = await degreeRepository.createDegree({
-            DegreeName: degreeName,
-            ShortName: shortName,
-            UserCreation: req.user.id,
-            CreatedAt: new Date(),
-            UserUpdate: req.user.id,
-            UpdateAt: new Date(),
-            Active: true
-        });
-
-        res.status(201).json(degree);
+        const degreeCreateDTO = DegreeMapper.toCreateDTO(req.body, req.user.id);
+        const degree = await degreeRepository.createDegree(degreeCreateDTO);
+        const degreeResponseDTO = DegreeMapper.toResponseDTO(degree);
+        res.status(201).json(degreeResponseDTO);
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -57,21 +45,12 @@ export const createDegree = async (req, res) => {
 export const updateDegree = async (req, res) => {
     if(req.user.Type != 1 || !req.user.Active)
         return res.status(403).json({ message: "No autorizado." });
-
-    const { id } = req.params;
-    const { degreeName, shortName } = req.body;
-
-    if (!degreeName || !id)
-        return res.status(400).json({ message: 'Faltan campos requeridos.' });
-
+    
     try {
-        const updatedDegree = await degreeRepository.updateDegree(id, {
-            DegreeName: degreeName, 
-            ShortName: shortName,
-            UserUpdate: req.user.id,
-            UpdateAt: new Date() 
-        });
-        return res.status(200).json(updatedDegree);
+        const degreeUpdateDTO = DegreeMapper.toUpdateDTO(req.params, req.body, req.user.id);
+        const updatedDegree = await degreeRepository.updateDegree(degreeUpdateDTO.Identity, degreeUpdateDTO);
+        const degreeResponseDTO = DegreeMapper.toResponseDTO(updatedDegree);
+        return res.status(200).json(degreeResponseDTO);
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }

@@ -57,5 +57,6 @@ Advisor.associate = (models) => {
     Advisor.belongsTo(models.Degree, {
         foreignKey: 'DegreeIdentity',
         targetKey: 'Identity',
+        as: 'degree'
     });
 };

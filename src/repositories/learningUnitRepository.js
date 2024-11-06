@@ -1,5 +1,7 @@
 //Repository de unidad de aprendizaje
+import { LearningUnitMapper } from "../mappers/learningUnitMapper.js";
 import { LearningUnit } from "../models/LearningUnit.js";
+import { Degree } from "../models/Degrees.js";
 
 //Funciones para interactuar con la tabla de unidad de aprendizaje
 export const learningUnitRepository = {
@@ -7,7 +9,14 @@ export const learningUnitRepository = {
     // Obtener todas las materias (LearningUnits)
     getAllLearningUnits: async () => {
         try {
-            const learningUnits = await LearningUnit.findAll();
+            const learningUnits = await LearningUnit.findAll({
+                attributes: ['Identity', 'Name', 'Active'],
+                include: [{
+                    model: Degree,
+                    as: 'degree',
+                    attributes: ['Identity', 'ShortName'],
+                }]
+            });
             return learningUnits;
         } catch (error) {
             throw new Error('Error al obtener las materias: ' + error.message);
@@ -18,6 +27,12 @@ export const learningUnitRepository = {
     getLearningUnitById: async (id) => {
         try {
             const learningUnit = await LearningUnit.findOne({
+                attributes: ['Identity', 'Name', 'Active'],
+                include: [{
+                    model: Degree,
+                    as: 'degree',
+                    attributes: ['Identity', 'ShortName'],
+                }],
                 where: { Identity: id }
             });
             return learningUnit;
@@ -67,13 +82,16 @@ export const learningUnitRepository = {
                 Active: newStatus,
                 UpdateAt: new Date(),
             });
-    
+            
+            //Regresar la materia con el DTO de respuesta
+            const learningUnitReponseDTO = LearningUnitMapper.toResponseDTO(learningUnit);
+
             return {
                 message: newStatus ? 'Materia activada exitosamente' : 'Materia desactivada exitosamente',
-                learningUnit,
+                learningUnitReponseDTO,
             };
         } catch (error) {
             throw new Error('Error al actualizar el estado de la materia: ' + error.message);
         }
-    }
+    },
 };

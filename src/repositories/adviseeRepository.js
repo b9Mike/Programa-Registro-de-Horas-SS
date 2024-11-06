@@ -1,5 +1,7 @@
 //Repository de asesorado
+import { StudentMapper } from "../mappers/studentMapper.js";
 import { Advisee } from "../models/Advisee.js";
+import { Degree } from "../models/Degrees.js";
 
 //Funciones para interactuar con la tabla de asesorado
 export const adviseeRepository = {
@@ -17,7 +19,14 @@ export const adviseeRepository = {
     // Obtener todos los asesorados
     getAllAdvisees: async () => {
         try {
-            const advisees = await Advisee.findAll();
+            const advisees = await Advisee.findAll({
+                attributes:['Enrollment', 'Gender', 'Name', 'Active'],
+                include: [{
+                    model: Degree,
+                    as: 'degree',
+                    attributes: ['Identity', 'ShortName'],
+                }]
+            });
             return advisees;
         } catch (error) {
             throw new Error('Error al obtener los asesorados: ' + error.message);
@@ -28,6 +37,12 @@ export const adviseeRepository = {
     getAdviseeByEnrollment: async (enrollment) => {
         try {
             const advisee = await Advisee.findOne({
+                attributes:['Enrollment', 'Gender', 'Name', 'Active'],
+                include: [{
+                    model: Degree,
+                    as: 'degree',
+                    attributes: ['Identity', 'ShortName'],
+                }],
                 where: { Enrollment: enrollment }
             });
             return advisee;
@@ -70,10 +85,13 @@ export const adviseeRepository = {
                 Active: newStatus,
                 UpdateAt: new Date(),
             });
+
+            //Regresar el asesorado con el DTO de respuesta
+            const adviseeResponseDTO = StudentMapper.toResponseDTO(advisee);
     
             return {
                 message: newStatus ? 'Asesorado activado exitosamente' : 'Asesorado desactivado exitosamente',
-                advisee,
+                adviseeResponseDTO,
             };
         } catch (error) {
             throw new Error('Error al actualizar el estado del asesorado: ' + error.message);
