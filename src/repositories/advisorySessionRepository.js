@@ -95,7 +95,7 @@ export const advisorySessionRepository = {
 
             //Lista con todas las asesorias en el rango
             const sessions = await AdvisorySession.findAll({
-                attributes: ['Identity', 'Topic', 'Professor', 'ClassType' , 'Active'],
+                attributes: ['Identity', 'Topic', 'Professor', 'ClassType' , 'SessionDate', 'StartTime', 'EndTime', 'Active'],
                 include: [{
                     model: LearningUnit,
                     as: 'learningUnit',
@@ -124,7 +124,7 @@ export const advisorySessionRepository = {
     getAdvisorySessionById: async (sessionId) => {
         try {
             const session = await AdvisorySession.findOne({
-                attributes: ['Identity', 'Topic', 'Professor', 'ClassType' , 'Active'],
+                attributes: ['Identity', 'Topic', 'Professor', 'ClassType' , 'SessionDate', 'StartTime', 'EndTime', 'Active'],
                 include: [{
                     model: LearningUnit,
                     as: 'learningUnit',
@@ -200,7 +200,7 @@ export const advisorySessionRepository = {
         try {
             // Consulta para obtener las sesiones de asesoría del asesor con su enrollment
             const advisories = await AdvisorySession.findAll({
-                attributes: ['Identity', 'Topic', 'Professor', 'ClassType' , 'Active'],
+                attributes: ['Identity', 'Topic', 'Professor', 'ClassType' , 'SessionDate', 'StartTime', 'EndTime', 'Active'],
                 include: [{
                     model: LearningUnit,
                     as: 'learningUnit',
@@ -229,7 +229,7 @@ export const advisorySessionRepository = {
     getAdvisorySessionsByDegreeUsingUnit: async (identity) => {
         try {
             const advisories = await AdvisorySession.findAll({
-                attributes: ['Identity', 'Topic', 'Professor', 'ClassType' , 'Active'],
+                attributes: ['Identity', 'Topic', 'Professor', 'ClassType' , 'SessionDate', 'StartTime', 'EndTime', 'Active'],
                 include: [{
                     model: LearningUnit,  // Relación con LearningUnit
                     as: 'learningUnit',
@@ -251,6 +251,23 @@ export const advisorySessionRepository = {
             return advisories;
         } catch (error) {
             throw new Error('Error al obtener las asesorías: ' + error.message);
+        }
+    },
+
+    setEndTimeToAdvisorySession: async (sessionId, endTime) => {
+        try{
+            const [rowsUpdated] = await AdvisorySession.update({EndTime: endTime}, {
+                where: { Identity: sessionId }
+            });
+            console.log(rowsUpdated);
+            // Verifica si alguna fila fue actualizada
+            if (rowsUpdated === 0) {
+                throw new Error('No se encontró la sesión de asesoría con el ID proporcionado o no hubo cambios');
+            }
+
+            return rowsUpdated;
+        } catch (error) {
+            throw new Error('Error al establecer hora de fin de la asesoría: ' + error.message);
         }
     }
     

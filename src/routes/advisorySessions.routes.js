@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { body, param } from "express-validator";
-import { createAdvisorySession, getAdvisorySessionById, getAllAdvisorySessions, toggleAdvisorySessionActivation, updateAdvisorySession, getAdvisorySessionsByAdvisor, getAdvisorySessionsByDegree } from "../controllers/advisorySession.controller.js";
+import { createAdvisorySession, getAdvisorySessionById, getAllAdvisorySessions, toggleAdvisorySessionActivation, updateAdvisorySession, getAdvisorySessionsByAdvisor, getAdvisorySessionsByDegree, setEndTimeToAdvisorySession } from "../controllers/advisorySession.controller.js";
 import { validateRequest } from "../middlewares/routerValidation.middleware.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 const router = Router();
@@ -79,10 +79,17 @@ router.get('/advisorySessions/advisor/:enrollment',
     ], validateRequest, authMiddleware, getAdvisorySessionsByAdvisor);
 
 //ruta para obtener reporte de asesoria por carrera mediante la materia
-
-    router.get('/advisorySessions/degrees/:identity', 
+router.get('/advisorySessions/degrees/:identity', 
         [
             param('identity').isInt().withMessage('El id debe ser un numero entero'),
         ], validateRequest, getAdvisorySessionsByDegree);
+
+router.put('/advisorySession/endTime/:sessionId',
+    [
+        param('sessionId').isInt().withMessage('El id debe ser un numero entero'),
+
+        body('endTime').matches(/^([01]?[0-9]|2[0-3]):([0-5]?[0-9]):([0-5]?[0-9])$/).optional({ nullable: true }).withMessage('La hora de fin es requerido, nulo o formato HH:mm:ss')
+
+    ],  validateRequest, authMiddleware, setEndTimeToAdvisorySession);
 
 export default router

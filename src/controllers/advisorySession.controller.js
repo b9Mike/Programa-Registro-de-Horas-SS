@@ -102,3 +102,18 @@ export const getAdvisorySessionsByDegree = async (req, res) => {
         return res.status(500).json({ message: 'Error al obtener las asesorías de la carrera', error: error.message });
     }
 };
+
+export const setEndTimeToAdvisorySession = async (req, res) => {
+    if(!(req.user.Type == 1 || req.use.Type == 2) || !req.user.Active)
+        return res.status(403).json({ message: "No autorizado." });
+
+    const { sessionId } = req.params;
+    const { endTime } = req.body;
+
+    try{
+        await advisorySessionRepository.setEndTimeToAdvisorySession(sessionId, endTime);
+        return res.status(200).json({message: "Se actualizo la hora de fin de la asesoria."});
+    } catch (error){
+        return res.status(500).json({message: error.message});
+    }
+}
