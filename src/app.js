@@ -20,6 +20,7 @@ const corsOptions = {
   allowedHeaders: ['Authorization', 'Content-Type'],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
+  exposedHeaders: ['Authorization'], 
 };
 
 // Habilitar CORS

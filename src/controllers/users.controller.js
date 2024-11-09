@@ -36,7 +36,7 @@ export const logIn = async (req, res) => {
     res
       .status(200)
       .header('Authorization', `Bearer ${token}`)
-      .json({ message: 'Inicio de sesión exitoso', token: `Bearer ${token}` });
+      .json({ message: 'Inicio de sesión exitoso'});
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
