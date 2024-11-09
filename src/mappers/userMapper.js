@@ -1,41 +1,36 @@
-import { userRegister, userLogin, userUpdate, userResponse } from "../DTOs/userDTO.js";
+import { userRegister, userLogin, userUpdate, userResponse } from '../DTOs/userDTO.js';
 
 export class UserMapper {
-    static toRegisterDTO(requestBody, requestUser){
-        //Validar si los campos son falsy
-        const { enrollment, name, password, type } = requestBody;
-        if (!enrollment || !name || !password || !type || !requestUser)
-            throw new Error('Campos faltantes');
+  static toRegisterDTO(requestBody, requestUser) {
+    //Validar si los campos son falsy
+    const { Enrollment, Name, Password, Type } = requestBody;
+    if (!Enrollment || !Name || !Password || !Type || !requestUser) throw new Error('Campos faltantes');
 
-        return new userRegister(enrollment, name, password, type, requestUser);
-    }
+    return new userRegister(Enrollment, Name, Password, Type, requestUser);
+  }
 
-    static toLoginDTO(requestBody){
-        //Validar si los campos son falsy
-        const { enrollment, password } = requestBody;
-        if (!enrollment || !password)
-            throw new Error('Campos faltantes');
+  static toLoginDTO(requestBody) {
+    //Validar si los campos son falsy
+    const { Enrollment, Password } = requestBody;
+    if (!Enrollment || !Password) throw new Error('Campos faltantes');
 
-        return new userLogin(enrollment, password);
-    }
+    return new userLogin(Enrollment, Password);
+  }
 
-    static toUpdateDTO(requestParams, requestBody, requestUser){
-        //Validar si los campos son falsy
-        const { enrollment } = requestParams;
-        const {name, password, type } = requestBody;
-        if (!enrollment || !name || !password || !type || !requestUser)
-            throw new Error('Campos faltantes');
+  static toUpdateDTO(requestParams, requestBody, requestUser) {
+    //Validar si los campos son falsy
+    const { enrollment } = requestParams;
+    const { Name, Password, Type } = requestBody;
+    if (!enrollment || !Name || !Password || !Type || !requestUser) throw new Error('Campos faltantes');
 
-        return new userUpdate(enrollment, name, password, type, requestUser);
-    }
+    return new userUpdate(enrollment, Name, Password, Type, requestUser);
+  }
 
-    static toResponseDTO(user){
-        //Validar si los campos son falsy
-        const { Enrollment, Name, Type} = user.dataValues;
-        if (!Enrollment || !Name || !Type)
-            throw new Error('Campos faltantes');
-        
-        return new userResponse(Enrollment, Name, Type);
-    }
+  static toResponseDTO(user) {
+    //Validar si los campos son falsy
+    const { Enrollment, Name, Type } = user.dataValues;
+    if (!Enrollment || !Name || !Type) throw new Error('Campos faltantes');
 
+    return new userResponse(Enrollment, Name, Type);
+  }
 }

@@ -1,6 +1,6 @@
 //configuracion de express
-import express from "express";
-import cors from "cors";
+import express from 'express';
+import cors from 'cors';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -13,13 +13,13 @@ import learningUnitRoutes from './routes/learningUnit.routes.js';
 import usersRoutes from './routes/users.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
 
-
 const app = express();
 
 const corsOptions = {
-    origin: process.env.FRONT_URL || 'http://localhost:4000', 
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
+  origin: process.env.FRONT_URL || 'http://localhost:4000',
+  allowedHeaders: ['Authorization', 'Content-Type'],
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
 };
 
 // Habilitar CORS
@@ -27,7 +27,6 @@ app.use(cors(corsOptions));
 
 // Middlewares
 app.use(express.json());
-
 
 //usar los router que creamos
 app.use(adviseesRoutes);
