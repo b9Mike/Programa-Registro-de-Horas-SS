@@ -21,7 +21,7 @@ export class UserMapper {
     //Validar si los campos son falsy
     const { enrollment } = requestParams;
     const { Name, Password, Type } = requestBody;
-    if (!enrollment || !Name || !Password || !Type || !requestUser) throw new Error('Campos faltantes');
+    if (!enrollment || !Name || !Type || !requestUser) throw new Error('Campos faltantes');
 
     return new userUpdate(enrollment, Name, Password, Type, requestUser);
   }

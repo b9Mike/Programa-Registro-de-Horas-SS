@@ -26,13 +26,7 @@ router.post(
 //Ruta para actualizar usuario
 router.put(
   '/user/:enrollment',
-  [
-    param('enrollment').isInt().withMessage('La matricula debe ser un entero.'),
-
-    body('Name').isString().notEmpty().withMessage('El nombre es requerido.').isLength({ min: 5, max: 255 }).withMessage('El nombre debe tener entre 5 a 255 caracteres'),
-    body('Password').isString().notEmpty().withMessage('La contraseña es requerida.').isLength({ min: 5, max: 255 }).withMessage('La contraseña debe tener entre 5 a 255 caracteres'),
-    body('Type').isInt().notEmpty().withMessage('El tipo de usuario es requerido.'),
-  ],
+  [param('enrollment').isInt().withMessage('La matricula debe ser un entero.'), body('Name').isString().notEmpty().withMessage('El nombre es requerido.').isLength({ min: 5, max: 255 }).withMessage('El nombre debe tener entre 5 a 255 caracteres'), body('Password').isString().withMessage('La contraseña es requerida.').isLength({ min: 0, max: 255 }).withMessage('La contraseña debe tener maximo 255 caracteres'), body('Type').isInt().notEmpty().withMessage('El tipo de usuario es requerido.')],
   validateRequest,
   authMiddleware,
   updateUser

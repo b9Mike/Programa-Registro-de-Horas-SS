@@ -15,7 +15,7 @@ export class StudentMapper {
     const { Gender, Name, DegreeIdentity } = requestBody;
     if (!enrollment || !Gender || !Name || !DegreeIdentity || !requestUser) throw new Error('Campos faltantes');
 
-    return new studentUpdate(Enrollment, Gender, Name, DegreeIdentity, requestUser);
+    return new studentUpdate(enrollment, Gender, Name, DegreeIdentity, requestUser);
   }
 
   static toResponseDTO(student) {

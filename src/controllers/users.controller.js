@@ -33,10 +33,7 @@ export const logIn = async (req, res) => {
 
     // Generar JWT
     const token = generateToken(user.Enrollment);
-    res
-      .status(200)
-      .header('Authorization', `Bearer ${token}`)
-      .json({ message: 'Inicio de sesión exitoso'});
+    res.status(200).header('Authorization', `Bearer ${token}`).json({ message: 'Inicio de sesión exitoso' });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -68,8 +65,10 @@ export const updateUser = async (req, res) => {
   try {
     const userUpdateDTO = UserMapper.toUpdateDTO(req.params, req.body, req.user.id);
     // Encriptar la nueva contraseña si se actualiza
-    const hashedPassword = await encryptPassword(userUpdateDTO.Password);
-    userUpdateDTO.Password = hashedPassword;
+    if (userUpdateDTO.Password != '') {
+      const hashedPassword = await encryptPassword(userUpdateDTO.Password);
+      userUpdateDTO.Password = hashedPassword;
+    }
 
     const user = await userRepository.updateUser(userUpdateDTO.Enrollment, userUpdateDTO);
     const userResponseDTO = UserMapper.toResponseDTO(user);
