@@ -11,6 +11,7 @@ import advisorySessionsRoutes from './routes/advisorySessions.routes.js';
 import degreesRoutes from './routes/degrees.routes.js';
 import learningUnitRoutes from './routes/learningUnit.routes.js';
 import usersRoutes from './routes/users.routes.js';
+import entryExitRecordRoutes from './routes/entryExitRecord.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
 
 const app = express();
@@ -36,6 +37,7 @@ app.use(advisorySessionsRoutes);
 app.use(degreesRoutes);
 app.use(learningUnitRoutes);
 app.use(usersRoutes);
+app.use(entryExitRecordRoutes);
 app.use(uploadRoutes);
 
 export default app;

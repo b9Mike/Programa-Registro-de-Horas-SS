@@ -10,6 +10,7 @@ import { AdvisorySession } from './models/AdvisorySession.js';
 import { Degree } from './models/Degrees.js';
 import { LearningUnit } from './models/LearningUnit.js';
 import { User } from './models/User.js';
+import { EntryExitRecord } from './models/EntryExitRecord.js';
 import {seedDemoUsers} from './seeders/users.seeder.js';
 import {seedDemoDegrees} from './seeders/degrees.seeder.js';
 
@@ -23,7 +24,8 @@ const models = {
   LearningUnit,
   AdvisorySession,
   Advisor,
-  Advisee
+  Advisee,
+  EntryExitRecord
 };
 
 // Establecer las asociaciones
