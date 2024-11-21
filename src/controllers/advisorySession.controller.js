@@ -2,6 +2,9 @@ import { SessionMapper } from '../mappers/advisorySessionMapper.js';
 import { advisorySessionRepository } from '../repositories/advisorySessionRepository.js';
 import { getDateRange } from '../services/advisorySession.service.js';
 
+import { generateExcelReport } from '../services/excelReportService.js';
+
+
 export const getAllAdvisorySessions = async (req, res) => {
   const { range } = req.query;
   let { start, end } = getDateRange(range);
@@ -107,5 +110,32 @@ export const setEndTimeToAdvisorySession = async (req, res) => {
     return res.status(200).json({ message: 'Se actualizo la hora de fin de la asesoria.' });
   } catch (error) {
     return res.status(500).json({ message: error.message });
+  }
+};
+
+
+// Nueva función para exportar asesorías a Excel
+export const exportAdvisorySessionsReport = async (req, res) => {
+  const { identity } = req.params; // Identidad de la carrera u otro criterio de filtro
+
+  try {
+    // Obtener las asesorías desde el repositorio
+    const advisories = await advisorySessionRepository.getAdvisorySessionsByDegreeUsingUnit(identity);
+
+    if (!advisories || advisories.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron asesorías para esta carrera.' });
+    }
+
+    // Generar el archivo Excel con los datos obtenidos
+    const excelBuffer = await generateExcelReport(advisories);
+
+    // Establecer las cabeceras para que el cliente descargue el archivo
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename="reporte_asesorias.xlsx"');
+    
+    // Enviar el archivo Excel
+    res.send(excelBuffer);
+  } catch (error) {
+    return res.status(500).json({ message: 'Error al generar el reporte en Excel', error: error.message });
   }
 };

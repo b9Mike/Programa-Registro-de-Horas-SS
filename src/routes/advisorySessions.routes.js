@@ -3,6 +3,8 @@ import { body, param } from 'express-validator';
 import { createAdvisorySession, getAdvisorySessionById, getAllAdvisorySessions, toggleAdvisorySessionActivation, updateAdvisorySession, getAdvisorySessionsByAdvisor, getAdvisorySessionsByDegree, setEndTimeToAdvisorySession } from '../controllers/advisorySession.controller.js';
 import { validateRequest } from '../middlewares/routerValidation.middleware.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
+import { exportAdvisorySessionsReport } from '../controllers/advisorySession.controller.js';
+
 const router = Router();
 
 //rutas de asesorias
@@ -67,6 +69,10 @@ router.get('/advisorySessions/advisor/:enrollment', [param('enrollment').isInt()
 
 //ruta para obtener reporte de asesoria por carrera mediante la materia
 router.get('/advisorySessions/degrees/:identity', [param('identity').isInt().withMessage('El id debe ser un numero entero')], validateRequest, getAdvisorySessionsByDegree);
+
+
+// Nueva ruta para exportar el reporte en Excel
+router.get('/advisorySessions/report/:identity', exportAdvisorySessionsReport);
 
 router.put(
   '/advisorySession/endTime/:sessionId',
